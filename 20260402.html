@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026-04-02 | トレード記録</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-title">
+    📊 トレード記録
+    <span class="pair-tag">USD/JPY</span>
+  </div>
+  <nav class="header-nav">
+    <a href="../index_4.html" class="nav-btn">← 一覧へ</a>
+    <a href="../rule/rule.html" class="nav-btn">📘 ルール</a>
+  </nav>
+</header>
+
+<main class="container">
+
+  <a href="../index_4.html" class="back-link">← 月間一覧に戻る</a>
+
+  <div class="page-header">
+    <h1>
+      📅 <span class="date-mono">2026-04-02</span>
+      <span style="font-size:14px;color:var(--text3);font-weight:400;">（木曜日）</span>
+    </h1>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">🌐 環境分析</span>
+    </div>
+    <div class="card-body">
+
+      <div class="env-grid">
+        <div class="env-item">
+          <div class="env-label">📅 日足 方向</div>
+          <div class="opt-group" id="nikki-opts">
+            <span class="opt g" data-val="up"   onclick="selectOpt('nikki','up',  this,'g')">↑ 上昇</span>
+            <span class="opt r" data-val="down" onclick="selectOpt('nikki','down',this,'r')">↓ 下降</span>
+            <span class="opt"   data-val="flat" onclick="selectOpt('nikki','flat',this,'')">→ 方向感なし</span>
+          </div>
+        </div>
+
+        <div class="env-item">
+          <div class="env-label">⏱ 短期足 トレンド</div>
+          <div class="opt-group" id="short-opts">
+            <span class="opt g" data-val="up_s"   onclick="selectOpt('short','up_s',  this,'g')">↑↑ 強い上昇</span>
+            <span class="opt g" data-val="up_g"   onclick="selectOpt('short','up_g',  this,'g')">↑ 緩やかな上昇</span>
+            <span class="opt r" data-val="down_s" onclick="selectOpt('short','down_s',this,'r')">↓↓ 強い下降</span>
+            <span class="opt r" data-val="down_g" onclick="selectOpt('short','down_g',this,'r')">↓ 緩やかな下降</span>
+            <span class="opt"   data-val="flat"   onclick="selectOpt('short','flat',  this,'')">→ 方向感なし</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-box">
+          <div class="field-label">📏 値幅（pips）</div>
+          <input type="number" id="valWidth" class="field-input" placeholder="例: 30.5" step="0.1">
+        </div>
+        <div class="env-item">
+          <div class="env-label">🎯 行動</div>
+          <div class="opt-group" id="action-opts">
+            <span class="opt" data-val="buy"   onclick="selectOpt('action','buy',  this,'')">🟦 買い</span>
+            <span class="opt" data-val="sell"  onclick="selectOpt('action','sell', this,'p')">🟪 売り</span>
+            <span class="opt y" data-val="watch" onclick="selectOpt('action','watch',this,'y')">👀 見送り</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-box">
+          <div class="field-label">💰 結果 pips</div>
+          <input type="number" id="pipsResult" class="field-input" placeholder="例: +3.2 or -2.1" step="0.1">
+        </div>
+        <div class="field-box">
+          <div class="field-label">🕐 エントリー時刻</div>
+          <input type="time" id="entryTime" class="field-input">
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">📊 チャート</span>
+    </div>
+    <div class="card-body">
+      <div class="chart-images">
+        <div class="ci-box">
+          <div class="ci-label">📅 日足チャート</div>
+          <img src="../images/20260402_day.png" alt="日足チャート 2026-04-02"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="ci-placeholder" style="display:none;">
+            <span style="font-size:28px;">📈</span>
+            <span>画像未設定</span>
+            <span style="font-size:11px;">images/20260402_day.png</span>
+          </div>
+        </div>
+        <div class="ci-box">
+          <div class="ci-label">⏱ 時間足チャート</div>
+          <img src="../images/20260402_hour.png" alt="時間足チャート 2026-04-02"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="ci-placeholder" style="display:none;">
+            <span style="font-size:28px;">📊</span>
+            <span>画像未設定</span>
+            <span style="font-size:11px;">images/20260402_hour.png</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">📝 メモ・振り返り</span>
+    </div>
+    <div class="card-body">
+      <textarea id="memoText" class="memo-textarea"
+        placeholder="エントリー根拠・反省・気づきなど自由に記入..."></textarea>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+    <button class="save-btn" onclick="saveData()">💾 保存する</button>
+    <span id="saveMsg" style="font-size:12px;color:var(--text3);"></span>
+    <a href="../index_4.html" class="nav-btn" style="margin-left:auto;">← 一覧へ戻る</a>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;margin-top:24px;">
+    <a href="20260401.html" class="nav-btn">← 前日</a>
+    <span style="color:var(--text3);font-size:12px;">次日 →</span>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  2026-04-02 · USD/JPY · Tokyo Session
+</footer>
+
+<script>
+const KEY = 'trade_20260402';
+const state = { nikki:'', short:'', action:'' };
+
+function selectOpt(group, val, el, colorClass){
+  const groupId = group==='nikki'?'nikki-opts':group==='short'?'short-opts':'action-opts';
+  document.querySelectorAll(`#${groupId} .opt`).forEach(o=>{
+    o.className=o.className.replace(/\bsel\b/,'').replace(/\b[grpy]\b/,'').trim();
+  });
+  el.classList.add('sel');
+  if(colorClass) el.classList.add(colorClass);
+  state[group]=val;
+}
+
+function saveData(){
+  const data={
+    date:'20260402',label:'2026-04-02',
+    nikkiEnv:state.nikki,shortEnv:state.short,action:state.action,
+    valWidth:parseFloat(document.getElementById('valWidth').value)||0,
+    pips:parseFloat(document.getElementById('pipsResult').value)||0,
+    entryTime:document.getElementById('entryTime').value,
+    memo:document.getElementById('memoText').value,
+    savedAt:new Date().toISOString()
+  };
+  localStorage.setItem(KEY,JSON.stringify(data));
+  const msg=document.getElementById('saveMsg');
+  msg.textContent='✅ 保存しました ('+new Date().toLocaleTimeString('ja-JP')+')';
+  msg.style.color='var(--green)';
+  setTimeout(()=>{msg.textContent='';},3000);
+}
+
+(function loadData(){
+  const raw=localStorage.getItem(KEY);
+  if(!raw)return;
+  try{
+    const d=JSON.parse(raw);
+    if(d.nikkiEnv){const el=document.querySelector(`#nikki-opts [data-val="${d.nikkiEnv}"]`);
+      if(el)selectOpt('nikki',d.nikkiEnv,el,d.nikkiEnv==='up'?'g':d.nikkiEnv==='down'?'r':'');}
+    if(d.shortEnv){const el=document.querySelector(`#short-opts [data-val="${d.shortEnv}"]`);
+      if(el)selectOpt('short',d.shortEnv,el,d.shortEnv.startsWith('up')?'g':d.shortEnv.startsWith('down')?'r':'');}
+    if(d.action){const el=document.querySelector(`#action-opts [data-val="${d.action}"]`);
+      if(el)selectOpt('action',d.action,el,d.action==='watch'?'y':d.action==='sell'?'p':'');}
+    if(d.valWidth) document.getElementById('valWidth').value=d.valWidth;
+    if(d.pips)     document.getElementById('pipsResult').value=d.pips;
+    if(d.entryTime)document.getElementById('entryTime').value=d.entryTime;
+    if(d.memo)     document.getElementById('memoText').value=d.memo;
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
