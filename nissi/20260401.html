@@ -5,10 +5,62 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>2026-04-01 | トレード記録</title>
   <link rel="stylesheet" href="../style.css">
+  <style>
+    /* ── 2カラムグリッド（3列版） ── */
+    .env-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    @media(max-width:640px){ .env-grid-3{ grid-template-columns:1fr; } }
+
+    /* ── yes/no トグル ── */
+    .yn-group { display: flex; gap: 8px; }
+    .yn {
+      flex: 1; text-align: center;
+      padding: 7px 0; border-radius: 6px; font-size: 13px; font-weight: 700;
+      border: 1px solid var(--border); background: var(--bg2);
+      color: var(--text3); cursor: pointer; transition: all .12s; user-select: none;
+    }
+    .yn:hover { border-color: var(--bord2); color: var(--text2); }
+    .yn.sel-y { background: #3fb95022; border-color: var(--green); color: var(--green); }
+    .yn.sel-n { background: #8b949e18; border-color: var(--text3); color: var(--text2); }
+
+    /* ── timing ── */
+    .timing-group { display: flex; gap: 8px; }
+    .timing-btn {
+      flex: 1; text-align: center;
+      padding: 8px 4px; border-radius: 6px; font-size: 12px; font-weight: 700;
+      border: 1px solid var(--border); background: var(--bg2);
+      color: var(--text3); cursor: pointer; transition: all .12s; user-select: none;
+    }
+    .timing-btn:hover { border-color: var(--bord2); color: var(--text2); }
+    .timing-btn.sel { background: #1f6feb22; border-color: var(--blue); color: var(--blue); }
+
+    /* ── pips 入力 大きめ ── */
+    .pips-input-box {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 16px 20px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .pips-input-box .field-label { margin-bottom: 0; min-width: 80px; }
+    #pipsResult {
+      font-size: 28px; font-weight: 700; width: 140px;
+      text-align: right; padding: 6px 12px;
+    }
+    #pipsResult:focus { border-color: var(--blue); }
+
+    /* ── 画像エラー修正: img は block で高さを持つ ── */
+    .ci-img {
+      width: 100%; height: 200px; object-fit: contain;
+      display: block; background: var(--bg); padding: 8px;
+    }
+    .ci-img.hidden { display: none; }
+  </style>
 </head>
 <body>
 
-<!-- ── HEADER ── -->
 <header class="site-header">
   <div class="site-title">
     📊 トレード記録
@@ -20,114 +72,158 @@
   </nav>
 </header>
 
-<!-- ── MAIN ── -->
 <main class="container">
 
   <a href="../index_4.html" class="back-link">← 月間一覧に戻る</a>
 
-  <!-- page header -->
   <div class="page-header">
-    <h1>
-      📅 <span class="date-mono">2026-04-01</span>
+    <h1>📅 <span class="date-mono">2026-04-01</span>
       <span style="font-size:14px;color:var(--text3);font-weight:400;">（水曜日）</span>
     </h1>
   </div>
 
-  <!-- ── 環境分析 ── -->
+  <!-- ══ 環境分析 ══ -->
   <div class="card">
     <div class="card-header">
       <span class="card-title">🌐 環境分析</span>
     </div>
     <div class="card-body">
 
+      <!-- Row 1: 日足 / 短期足トレンド方向 -->
       <div class="env-grid">
 
-        <!-- 日足 -->
         <div class="env-item">
           <div class="env-label">📅 日足 方向</div>
           <div class="opt-group" id="nikki-opts">
-            <span class="opt g" data-val="up"   onclick="selectOpt('nikki','up',  this,'g')">↑ 上昇</span>
-            <span class="opt r" data-val="down" onclick="selectOpt('nikki','down',this,'r')">↓ 下降</span>
-            <span class="opt"   data-val="flat" onclick="selectOpt('nikki','flat',this,'')">→ 方向感なし</span>
+            <span class="opt g" data-val="up"   onclick="sel('nikki','up',  this,'g')">↑ 上昇</span>
+            <span class="opt r" data-val="down" onclick="sel('nikki','down',this,'r')">↓ 下降</span>
+            <span class="opt"   data-val="flat" onclick="sel('nikki','flat',this,'')">→ 方向感なし</span>
           </div>
         </div>
 
-        <!-- 短期足 -->
         <div class="env-item">
-          <div class="env-label">⏱ 短期足 トレンド</div>
+          <div class="env-label">⏱ 短期足 トレンド方向</div>
           <div class="opt-group" id="short-opts">
-            <span class="opt g" data-val="up_s"   onclick="selectOpt('short','up_s',  this,'g')">↑↑ 強い上昇</span>
-            <span class="opt g" data-val="up_g"   onclick="selectOpt('short','up_g',  this,'g')">↑ 緩やかな上昇</span>
-            <span class="opt r" data-val="down_s" onclick="selectOpt('short','down_s',this,'r')">↓↓ 強い下降</span>
-            <span class="opt r" data-val="down_g" onclick="selectOpt('short','down_g',this,'r')">↓ 緩やかな下降</span>
-            <span class="opt"   data-val="flat"   onclick="selectOpt('short','flat',  this,'')">→ 方向感なし</span>
+            <span class="opt g" data-val="up"   onclick="sel('short','up',  this,'g')">↑ 上昇</span>
+            <span class="opt r" data-val="down" onclick="sel('short','down',this,'r')">↓ 下降</span>
+            <span class="opt"   data-val="flat" onclick="sel('short','flat',this,'')">→ 方向感なし</span>
           </div>
         </div>
 
       </div>
 
-      <!-- 値幅 & 行動 -->
+      <!-- Row 2: 9:00-10:00 値動き（全幅） -->
+      <div class="env-item" style="margin-bottom:12px;">
+        <div class="env-label">🕘 9:00〜10:00 値動き</div>
+        <div class="opt-group" id="move-opts">
+          <span class="opt g" data-val="up_s"   onclick="sel('move','up_s',  this,'g')">↑↑ 強い上昇</span>
+          <span class="opt g" data-val="up_g"   onclick="sel('move','up_g',  this,'g')">↑ 緩やかな上昇</span>
+          <span class="opt r" data-val="down_s" onclick="sel('move','down_s',this,'r')">↓↓ 強い下降</span>
+          <span class="opt r" data-val="down_g" onclick="sel('move','down_g',this,'r')">↓ 緩やかな下降</span>
+          <span class="opt"   data-val="flat"   onclick="sel('move','flat',  this,'')">→ 方向感なし</span>
+        </div>
+      </div>
+
+      <!-- Row 3: 異常性 / 継続性 / エントリータイミング -->
+      <div class="env-grid-3">
+
+        <div class="env-item">
+          <div class="env-label">⚡ 異常性</div>
+          <div class="yn-group">
+            <span class="yn" data-group="abnormal" data-val="yes" onclick="selYN('abnormal','yes',this)">有り</span>
+            <span class="yn" data-group="abnormal" data-val="no"  onclick="selYN('abnormal','no', this)">無し</span>
+          </div>
+        </div>
+
+        <div class="env-item">
+          <div class="env-label">🔄 継続性</div>
+          <div class="yn-group">
+            <span class="yn" data-group="continuity" data-val="yes" onclick="selYN('continuity','yes',this)">有り</span>
+            <span class="yn" data-group="continuity" data-val="no"  onclick="selYN('continuity','no', this)">無し</span>
+          </div>
+        </div>
+
+        <div class="env-item">
+          <div class="env-label">🎯 エントリータイミング</div>
+          <div class="timing-group">
+            <span class="timing-btn" data-val="10just"  onclick="selTiming('10just', this)">10:00<br>just</span>
+            <span class="timing-btn" data-val="pullback" onclick="selTiming('pullback',this)">押し<br>戻し</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Row 4: 値幅 / 行動 -->
       <div class="field-row">
         <div class="field-box">
-          <div class="field-label">📏 値幅（pips）</div>
-          <input type="number" id="valWidth" class="field-input" placeholder="例: 30.5" step="0.1">
+          <div class="field-label">📏 9〜10時 値幅（pips）</div>
+          <input type="number" id="valWidth" class="field-input" placeholder="例: 35.0" step="0.1">
         </div>
         <div class="env-item">
-          <div class="env-label">🎯 行動</div>
+          <div class="env-label">🏹 行動</div>
           <div class="opt-group" id="action-opts">
-            <span class="opt" data-val="buy"   onclick="selectOpt('action','buy',  this,'')">🟦 買い</span>
-            <span class="opt" data-val="sell"  onclick="selectOpt('action','sell', this,'p')">🟪 売り</span>
-            <span class="opt y" data-val="watch" onclick="selectOpt('action','watch',this,'y')">👀 見送り</span>
+            <span class="opt"  data-val="buy"   onclick="sel('action','buy',  this,'')">🟦 買い</span>
+            <span class="opt"  data-val="sell"  onclick="sel('action','sell', this,'p')">🟪 売り</span>
+            <span class="opt y" data-val="watch" onclick="sel('action','watch',this,'y')">👀 見送り</span>
           </div>
-        </div>
-      </div>
-
-      <!-- pips 結果 -->
-      <div class="field-row">
-        <div class="field-box">
-          <div class="field-label">💰 結果 pips</div>
-          <input type="number" id="pipsResult" class="field-input" placeholder="例: +3.2 or -2.1" step="0.1">
-        </div>
-        <div class="field-box">
-          <div class="field-label">🕐 エントリー時刻</div>
-          <input type="time" id="entryTime" class="field-input">
         </div>
       </div>
 
     </div>
   </div>
 
-  <!-- ── チャート画像 ── -->
+  <!-- ══ 結果 ══ -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">💰 結果</span>
+    </div>
+    <div class="card-body">
+      <div class="pips-input-box">
+        <div class="field-label">pips</div>
+        <input type="number" id="pipsResult" class="field-input" placeholder="0.0" step="0.1">
+        <span style="font-size:13px;color:var(--text3);">pips</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ チャート画像 ══ -->
   <div class="card">
     <div class="card-header">
       <span class="card-title">📊 チャート</span>
+      <span style="font-size:11px;color:var(--text3);">images/ フォルダに画像を配置してください</span>
     </div>
     <div class="card-body">
       <div class="chart-images">
 
-        <!-- 日足チャート -->
+        <!-- 日足 -->
         <div class="ci-box">
           <div class="ci-label">📅 日足チャート</div>
-          <img src="../images/20260401_day.png"
+          <img id="img-day"
+               class="ci-img"
+               src="../images/20260401_day.png"
                alt="日足チャート 2026-04-01"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-          <div class="ci-placeholder" style="display:none;">
+               onload="imgOk('img-day','ph-day')"
+               onerror="imgNg('img-day','ph-day')">
+          <div id="ph-day" class="ci-placeholder" style="display:none;">
             <span style="font-size:28px;">📈</span>
-            <span>画像未設定</span>
-            <span style="font-size:11px;">images/20260401_day.png</span>
+            <span>画像が見つかりません</span>
+            <code style="font-size:10px;color:var(--text3);">images/20260401_day.png</code>
           </div>
         </div>
 
-        <!-- 時間足チャート -->
+        <!-- 時間足 -->
         <div class="ci-box">
           <div class="ci-label">⏱ 時間足チャート</div>
-          <img src="../images/20260401_hour.png"
+          <img id="img-hour"
+               class="ci-img"
+               src="../images/20260401_hour.png"
                alt="時間足チャート 2026-04-01"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-          <div class="ci-placeholder" style="display:none;">
+               onload="imgOk('img-hour','ph-hour')"
+               onerror="imgNg('img-hour','ph-hour')">
+          <div id="ph-hour" class="ci-placeholder" style="display:none;">
             <span style="font-size:28px;">📊</span>
-            <span>画像未設定</span>
-            <span style="font-size:11px;">images/20260401_hour.png</span>
+            <span>画像が見つかりません</span>
+            <code style="font-size:10px;color:var(--text3);">images/20260401_hour.png</code>
           </div>
         </div>
 
@@ -135,25 +231,25 @@
     </div>
   </div>
 
-  <!-- ── メモ ── -->
+  <!-- ══ メモ ══ -->
   <div class="card">
     <div class="card-header">
       <span class="card-title">📝 メモ・振り返り</span>
     </div>
     <div class="card-body">
       <textarea id="memoText" class="memo-textarea"
-        placeholder="エントリー根拠・反省・気づきなど自由に記入..."></textarea>
+        placeholder="エントリー根拠・押し目のタイミング・反省など自由に記入..."></textarea>
     </div>
   </div>
 
   <!-- save -->
   <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
     <button class="save-btn" onclick="saveData()">💾 保存する</button>
-    <span id="saveMsg" style="font-size:12px;color:var(--text3);"></span>
+    <span id="saveMsg" style="font-size:12px;"></span>
     <a href="../index_4.html" class="nav-btn" style="margin-left:auto;">← 一覧へ戻る</a>
   </div>
 
-  <!-- prev / next nav -->
+  <!-- prev / next -->
   <div style="display:flex;justify-content:space-between;margin-top:24px;">
     <span style="color:var(--text3);font-size:12px;">← 前日</span>
     <a href="20260402.html" class="nav-btn">次の日 →</a>
@@ -166,73 +262,130 @@
 </footer>
 
 <script>
+/* ══ 状態 ══ */
 const KEY = 'trade_20260401';
-const state = { nikki:'', short:'', action:'' };
+const S = { nikki:'', short:'', move:'', abnormal:'', continuity:'', timing:'', action:'' };
 
-function selectOpt(group, val, el, colorClass){
-  /* reset group */
-  const groupId = group === 'nikki'  ? 'nikki-opts'
-                : group === 'short'  ? 'short-opts'
-                : 'action-opts';
-  document.querySelectorAll(`#${groupId} .opt`).forEach(o=>{
-    o.className = o.className.replace(/\bsel\b/,'').replace(/\b[grpy]\b/,'').trim();
-    /* restore base color class stored in data */
-    const dc = o.dataset.color || '';
-    if(dc) o.classList.add(dc);
+/* ══ 画像ロード（IDで確実に参照） ══ */
+function imgOk(imgId, phId){
+  document.getElementById(imgId).classList.remove('hidden');
+  document.getElementById(phId).style.display = 'none';
+}
+function imgNg(imgId, phId){
+  document.getElementById(imgId).classList.add('hidden');
+  document.getElementById(phId).style.display  = 'flex';
+}
+/* ブラウザキャッシュで onload が発火しない場合の補完 */
+window.addEventListener('load', () => {
+  ['day','hour'].forEach(k => {
+    const img = document.getElementById(`img-${k}`);
+    if(img && img.complete){
+      if(img.naturalWidth > 0) imgOk(`img-${k}`, `ph-${k}`);
+      else                     imgNg(`img-${k}`, `ph-${k}`);
+    }
   });
-  /* mark selected */
-  const prevColor = el.className.match(/\b[grpy]\b/)?.[0] || '';
+});
+
+/* ══ 選択ボタン共通 ══ */
+function sel(group, val, el, colorCls){
+  const groupMap = { nikki:'nikki-opts', short:'short-opts', move:'move-opts', action:'action-opts' };
+  document.querySelectorAll(`#${groupMap[group]} .opt`).forEach(o =>
+    o.className = o.className.replace(/\bsel\b|\b[grpy]\b/g,'').trim()
+  );
   el.classList.add('sel');
-  if(colorClass) el.classList.add(colorClass);
-  state[group] = val;
+  if(colorCls) el.classList.add(colorCls);
+  S[group] = val;
+  colorPipsInput();
 }
 
-/* ── Save to localStorage ── */
+function selYN(group, val, el){
+  document.querySelectorAll(`[data-group="${group}"]`).forEach(o =>
+    o.className = o.className.replace(/\bsel-[yn]\b/g,'').trim()
+  );
+  el.classList.add(val === 'yes' ? 'sel-y' : 'sel-n');
+  S[group] = val;
+}
+
+function selTiming(val, el){
+  document.querySelectorAll('.timing-btn').forEach(o =>
+    o.classList.remove('sel')
+  );
+  el.classList.add('sel');
+  S.timing = val;
+}
+
+/* pips 入力欄の色を結果に合わせて変える */
+function colorPipsInput(){
+  const v = parseFloat(document.getElementById('pipsResult').value);
+  const el = document.getElementById('pipsResult');
+  el.style.color = isNaN(v) ? '' : v > 0 ? 'var(--green)' : v < 0 ? 'var(--red)' : '';
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('pipsResult').addEventListener('input', colorPipsInput);
+});
+
+/* ══ 保存 ══ */
 function saveData(){
   const data = {
-    date:       '20260401',
-    label:      '2026-04-01',
-    nikkiEnv:   state.nikki,
-    shortEnv:   state.short,
-    action:     state.action,
-    valWidth:   parseFloat(document.getElementById('valWidth').value) || 0,
+    date:'20260401', label:'2026-04-01',
+    nikkiEnv:   S.nikki,
+    shortEnv:   S.short,
+    move9to10:  S.move,
+    abnormal:   S.abnormal,
+    continuity: S.continuity,
+    timing:     S.timing,
+    action:     S.action,
+    valWidth:   parseFloat(document.getElementById('valWidth').value)   || 0,
     pips:       parseFloat(document.getElementById('pipsResult').value) || 0,
-    entryTime:  document.getElementById('entryTime').value,
     memo:       document.getElementById('memoText').value,
     savedAt:    new Date().toISOString()
   };
   localStorage.setItem(KEY, JSON.stringify(data));
   const msg = document.getElementById('saveMsg');
-  msg.textContent = '✅ 保存しました (' + new Date().toLocaleTimeString('ja-JP') + ')';
+  msg.textContent = '✅ 保存しました（' + new Date().toLocaleTimeString('ja-JP') + '）';
   msg.style.color = 'var(--green)';
-  setTimeout(()=>{ msg.textContent=''; }, 3000);
+  setTimeout(() => { msg.textContent = ''; }, 3000);
 }
 
-/* ── Load from localStorage ── */
-(function loadData(){
+/* ══ 読み込み ══ */
+(function load(){
   const raw = localStorage.getItem(KEY);
   if(!raw) return;
-  try{
-    const d = JSON.parse(raw);
-    if(d.nikkiEnv){
-      const el = document.querySelector(`#nikki-opts [data-val="${d.nikkiEnv}"]`);
-      if(el) selectOpt('nikki',d.nikkiEnv,el, d.nikkiEnv==='up'?'g':d.nikkiEnv==='down'?'r':'');
+  let d;
+  try { d = JSON.parse(raw); } catch { return; }
+
+  const tryOpt = (groupId, key, colorFn) => {
+    if(!d[key]) return;
+    const el = document.querySelector(`#${groupId} [data-val="${d[key]}"]`);
+    if(el) {
+      const cls = colorFn(d[key]);
+      el.classList.add('sel');
+      if(cls) el.classList.add(cls);
+      S[groupId.replace('-opts','')] = d[key];
     }
-    if(d.shortEnv){
-      const el = document.querySelector(`#short-opts [data-val="${d.shortEnv}"]`);
-      if(el) selectOpt('short',d.shortEnv,el,
-        d.shortEnv.startsWith('up')?'g':d.shortEnv.startsWith('down')?'r':'');
-    }
-    if(d.action){
-      const el = document.querySelector(`#action-opts [data-val="${d.action}"]`);
-      if(el) selectOpt('action',d.action,el,
-        d.action==='watch'?'y':d.action==='sell'?'p':'');
-    }
-    if(d.valWidth)  document.getElementById('valWidth').value   = d.valWidth;
-    if(d.pips)      document.getElementById('pipsResult').value = d.pips;
-    if(d.entryTime) document.getElementById('entryTime').value  = d.entryTime;
-    if(d.memo)      document.getElementById('memoText').value   = d.memo;
-  } catch(e){ console.warn('load error',e); }
+  };
+
+  tryOpt('nikki-opts',  'nikkiEnv',  v => v==='up'?'g':v==='down'?'r':'');
+  tryOpt('short-opts',  'shortEnv',  v => v==='up'?'g':v==='down'?'r':'');
+  tryOpt('move-opts',   'move9to10', v => v.startsWith('up')?'g':v.startsWith('down')?'r':'');
+  tryOpt('action-opts', 'action',    v => v==='sell'?'p':v==='watch'?'y':'');
+
+  if(d.abnormal){
+    const el = document.querySelector(`[data-group="abnormal"][data-val="${d.abnormal}"]`);
+    if(el) { el.classList.add(d.abnormal==='yes'?'sel-y':'sel-n'); S.abnormal=d.abnormal; }
+  }
+  if(d.continuity){
+    const el = document.querySelector(`[data-group="continuity"][data-val="${d.continuity}"]`);
+    if(el) { el.classList.add(d.continuity==='yes'?'sel-y':'sel-n'); S.continuity=d.continuity; }
+  }
+  if(d.timing){
+    const el = document.querySelector(`.timing-btn[data-val="${d.timing}"]`);
+    if(el) { el.classList.add('sel'); S.timing=d.timing; }
+  }
+
+  if(d.valWidth)  document.getElementById('valWidth').value   = d.valWidth;
+  if(d.pips)    { document.getElementById('pipsResult').value = d.pips; colorPipsInput(); }
+  if(d.memo)      document.getElementById('memoText').value   = d.memo;
 })();
 </script>
 </body>
