@@ -55,8 +55,33 @@
     .ci-img {
       width: 100%; height: 200px; object-fit: contain;
       display: block; background: var(--bg); padding: 8px;
+      cursor: zoom-in; transition: opacity .15s;
     }
+    .ci-img:hover { opacity: .85; }
     .ci-img.hidden { display: none; }
+
+    /* ── Lightbox ── */
+    #lightbox {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.88); z-index: 9999;
+      align-items: center; justify-content: center;
+      cursor: zoom-out;
+    }
+    #lightbox.open { display: flex; }
+    #lb-img {
+      max-width: 94vw; max-height: 92vh;
+      object-fit: contain; border-radius: 6px;
+      box-shadow: 0 8px 48px #0008;
+      animation: lbIn .18s ease;
+    }
+    @keyframes lbIn { from { transform: scale(.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    #lb-close {
+      position: fixed; top: 16px; right: 20px;
+      font-size: 28px; color: #fff; cursor: pointer;
+      opacity: .7; transition: opacity .15s; line-height: 1;
+      background: none; border: none;
+    }
+    #lb-close:hover { opacity: 1; }
   </style>
 </head>
 <body>
@@ -202,6 +227,7 @@
                class="ci-img"
                src="../images/20260401_day.png"
                alt="日足チャート 2026-04-01"
+               onclick="openLB(this.src)"
                onload="imgOk('img-day','ph-day')"
                onerror="imgNg('img-day','ph-day')">
           <div id="ph-day" class="ci-placeholder" style="display:none;">
@@ -218,6 +244,7 @@
                class="ci-img"
                src="../images/20260401_hour.png"
                alt="時間足チャート 2026-04-01"
+               onclick="openLB(this.src)"
                onload="imgOk('img-hour','ph-hour')"
                onerror="imgNg('img-hour','ph-hour')">
           <div id="ph-hour" class="ci-placeholder" style="display:none;">
@@ -261,7 +288,25 @@
   2026-04-01 · USD/JPY · Tokyo Session
 </footer>
 
+<!-- ── Lightbox ── -->
+<div id="lightbox" onclick="closeLB()">
+  <button id="lb-close" onclick="closeLB()">✕</button>
+  <img id="lb-img" src="" alt="拡大チャート">
+</div>
+
 <script>
+/* ══ Lightbox ══ */
+function openLB(src){
+  document.getElementById('lb-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLB(){
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLB(); });
+
 /* ══ 状態 ══ */
 const KEY = 'trade_20260401';
 const S = { nikki:'', short:'', move:'', abnormal:'', continuity:'', timing:'', action:'' };

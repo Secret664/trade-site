@@ -1,0 +1,73 @@
+name: 📅 日誌ページ自動生成
+
+on:
+  schedule:
+    # 毎朝 8:45 JST (= 23:45 UTC) に実行
+    - cron: '45 23 * * 1-5'   # 平日のみ
+  workflow_dispatch:           # 手動実行ボタンも有効
+
+jobs:
+  create-daily-page:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 日付計算（JST）
+        id: date
+        run: |
+          # JST = UTC+9
+          DATE_KEY=$(TZ=Asia/Tokyo date +%Y%m%d)
+          DATE_LABEL=$(TZ=Asia/Tokyo date +%Y-%m-%d)
+          DOW=$(TZ=Asia/Tokyo date +%u)   # 1=月 〜 7=日
+          DOW_NAMES=("" "月曜日" "火曜日" "水曜日" "木曜日" "金曜日" "土曜日" "日曜日")
+          DOW_JP="${DOW_NAMES[$DOW]}"
+
+          # 前日・翌日（平日のみ生成するが prev/next は曜日を問わず計算）
+          PREV_KEY=$(TZ=Asia/Tokyo date -d "yesterday" +%Y%m%d)
+          NEXT_KEY=$(TZ=Asia/Tokyo date -d "tomorrow"  +%Y%m%d)
+
+          echo "DATE_KEY=$DATE_KEY"     >> $GITHUB_OUTPUT
+          echo "DATE_LABEL=$DATE_LABEL" >> $GITHUB_OUTPUT
+          echo "DOW_JP=$DOW_JP"         >> $GITHUB_OUTPUT
+          echo "PREV_KEY=$PREV_KEY"     >> $GITHUB_OUTPUT
+          echo "NEXT_KEY=$NEXT_KEY"     >> $GITHUB_OUTPUT
+
+      - name: 日誌 HTML を生成
+        env:
+          DATE_KEY:   ${{ steps.date.outputs.DATE_KEY }}
+          DATE_LABEL: ${{ steps.date.outputs.DATE_LABEL }}
+          DOW_JP:     ${{ steps.date.outputs.DOW_JP }}
+          PREV_KEY:   ${{ steps.date.outputs.PREV_KEY }}
+          NEXT_KEY:   ${{ steps.date.outputs.NEXT_KEY }}
+        run: |
+          TARGET="nissi/${DATE_KEY}.html"
+
+          # すでに存在する場合はスキップ（上書きしない）
+          if [ -f "$TARGET" ]; then
+            echo "✅ $TARGET はすでに存在するためスキップ"
+            exit 0
+          fi
+
+          # テンプレートからプレースホルダーを置換
+          sed \
+            -e "s/{{DATE_KEY}}/${DATE_KEY}/g"     \
+            -e "s/{{DATE_LABEL}}/${DATE_LABEL}/g" \
+            -e "s/{{DOW}}/${DOW_JP}/g"            \
+            -e "s/{{PREV_KEY}}/${PREV_KEY}/g"     \
+            -e "s/{{NEXT_KEY}}/${NEXT_KEY}/g"     \
+            nissi/_template.html > "$TARGET"
+
+          echo "✅ 生成: $TARGET"
+
+      - name: コミット & プッシュ
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add nissi/
+          # 変更がなければスキップ
+          git diff --cached --quiet && echo "変更なし" && exit 0
+          git commit -m "📅 日誌ページ自動生成: $(TZ=Asia/Tokyo date +%Y-%m-%d)"
+          git push
