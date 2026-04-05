@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ルール | トレード記録</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    /* ── コンセプトカード ── */
+    .concept-card {
+      background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--r2);
+      padding: 28px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .concept-card::before {
+      content: '';
+      position: absolute; top: -60px; right: -60px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, #58a6ff12 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .concept-title {
+      font-size: 20px; font-weight: 700; color: var(--text);
+      margin-bottom: 8px;
+    }
+    .concept-tags {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px;
+    }
+    .ctag {
+      padding: 3px 10px; border-radius: 6px; font-size: 11px;
+      font-family: 'JetBrains Mono', monospace; font-weight: 600;
+    }
+    .ctag.blue   { background: #1f6feb22; border: 1px solid #1f6feb55; color: var(--blue); }
+    .ctag.green  { background: #3fb95022; border: 1px solid #3fb95055; color: var(--green); }
+    .ctag.yellow { background: #d2992222; border: 1px solid #d2992255; color: var(--yellow); }
+    .ctag.purple { background: #bc8cff22; border: 1px solid #bc8cff55; color: var(--purple); }
+    .concept-desc {
+      font-size: 13px; color: var(--text2); line-height: 1.85;
+    }
+    .concept-desc strong { color: var(--text); }
+
+    /* ── 条件ハイライトボックス ── */
+    .trigger-box {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--blue);
+      border-radius: var(--r);
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .trigger-label {
+      font-size: 11px; color: var(--text3); text-transform: uppercase;
+      letter-spacing: .08em; min-width: 80px;
+    }
+    .trigger-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px; font-weight: 700; color: var(--text);
+    }
+    .trigger-note {
+      font-size: 12px; color: var(--text3);
+    }
+    .trigger-box.green  { border-left-color: var(--green); }
+    .trigger-box.yellow { border-left-color: var(--yellow); }
+    .trigger-box.red    { border-left-color: var(--red); }
+
+    /* ── ステップ ── */
+    .steps { display: flex; flex-direction: column; gap: 8px; }
+    .step {
+      display: flex; align-items: flex-start; gap: 14px;
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 14px 16px;
+    }
+    .step-num {
+      flex-shrink: 0;
+      width: 28px; height: 28px;
+      background: #1f6feb22; border: 1px solid #1f6feb55;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; font-weight: 700; color: var(--blue);
+    }
+    .step-body { font-size: 13px; color: var(--text2); line-height: 1.7; }
+    .step-body strong { color: var(--text); }
+    .step-body .hi { color: var(--blue); font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+    .step-body .ok { color: var(--green); font-weight: 700; }
+    .step-body .ng { color: var(--red); font-weight: 700; }
+
+    /* ── 禁止リスト ── */
+    .ban-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .ban-list li {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px;
+      background: #f8514910; border: 1px solid #f8514930;
+      border-radius: var(--r); font-size: 13px; color: var(--text2);
+    }
+    .ban-list li .icon { font-size: 15px; flex-shrink: 0; }
+    .ban-list li strong { color: var(--text); }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-title">
+    📊 トレード記録
+    <span class="pair-tag">USD/JPY</span>
+  </div>
+  <nav class="header-nav">
+    <a href="../index_4.html" class="nav-btn">← 一覧へ</a>
+  </nav>
+</header>
+
+<main class="container">
+
+  <a href="../index_4.html" class="back-link">← 月間一覧に戻る</a>
+
+  <!-- ══ コンセプト ══ -->
+  <div class="concept-card">
+    <div class="concept-title">📘 ドル円限定・東京タイム特化トレード</div>
+    <div class="concept-tags">
+      <span class="ctag blue">USD/JPY 限定</span>
+      <span class="ctag green">9〜12時のみ</span>
+      <span class="ctag yellow">フロー追従型</span>
+      <span class="ctag purple">難易度：入門</span>
+    </div>
+    <p class="concept-desc">
+      本質は<strong>「予測ではなく、事実への追従」</strong>。<br>
+      9〜10時の株式市場オープンで企業・機関の実需・大口資金移動が集中し、
+      <strong>「理由のあるトレンド」</strong>が発生する。<br>
+      これはトレンド分析でもパターン分析でもなく、
+      <strong>「異常な資金流入という事実が確認された後に追従する」フロー追従型</strong>。<br>
+      昼休みの12時で流動性が低下するため、時間制限付きのトレンドとなる。
+    </p>
+  </div>
+
+  <!-- ══ 発動条件 ══ -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">⚡ 発動条件</span>
+    </div>
+    <div class="card-body">
+      <div class="trigger-box green">
+        <div>
+          <div class="trigger-label">9〜10時の値幅</div>
+          <div class="trigger-value">30 pips 以上</div>
+        </div>
+        <div class="trigger-note">
+          これ未満はただのノイズ。<br>
+          30pips以上のときのみ手法が発動する。
+        </div>
+      </div>
+      <div class="trigger-box blue">
+        <div>
+          <div class="trigger-label">エントリー</div>
+          <div class="trigger-value">10:00 ジャスト</div>
+        </div>
+        <div class="trigger-note">
+          基本型・再現性最高。<br>
+          押し目があれば 10〜10:30 の押し戻しも可。
+        </div>
+      </div>
+      <div class="trigger-box yellow" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>
+          <div class="trigger-label">利確</div>
+          <div class="trigger-value">5〜10 pips</div>
+          <div class="trigger-note">即利確。欲張らない。スキャル設計。</div>
+        </div>
+        <div>
+          <div class="trigger-label">強制決済</div>
+          <div class="trigger-value">12:00</div>
+          <div class="trigger-note">絶対ルール。流動性低下のため保有しない。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 意思決定アルゴリズム ══ -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">🧠 意思決定アルゴリズム（6ステップ）</span>
+    </div>
+    <div class="card-body">
+      <div class="steps">
+
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>10時にチャートを見る</strong>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>9〜10時の値幅を測る</strong>（ヒゲ含む）
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <span class="hi">30pips以上</span>なら方向決定：<br>
+            <span class="ok">上昇 → 買い</span> ／ <span class="ng">下落 → 売り</span>
+            （<strong>完全順張り・逆張り禁止</strong>）
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <strong>即エントリー</strong>：<span class="hi">10時ジャスト</span>
+            または <span class="hi">10〜10:30</span> の押し目
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <span class="ok">5〜10pipsで即利確</span>（欲張らない・スキャル設計）
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">6</div>
+          <div class="step-body">
+            <span class="ng">12時で強制決済</span>（絶対ルール）
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ NG ルール ══ -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">🚫 やってはいけないこと</span>
+    </div>
+    <div class="card-body">
+      <ul class="ban-list">
+        <li>
+          <span class="icon">📉</span>
+          <div><strong>30pips未満での参加</strong>：ただのノイズ。条件を満たすまで待つ。</div>
+        </li>
+        <li>
+          <span class="icon">🔁</span>
+          <div><strong>逆張り</strong>：このロジックは完全順張り設計。方向に逆らわない。</div>
+        </li>
+        <li>
+          <span class="icon">🕐</span>
+          <div><strong>11時以降のエントリー</strong>：終盤参加は不利。トレンドの勢いは10時がピーク。</div>
+        </li>
+        <li>
+          <span class="icon">🕛</span>
+          <div><strong>12時を超えた保有</strong>：流動性が低下する昼休みに持ち越さない。絶対ルール。</div>
+        </li>
+        <li>
+          <span class="icon">🌍</span>
+          <div><strong>他時間帯・他手法との混在</strong>：ロジックが崩壊する。この手法は東京の中だけで完結する独立型。</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:32px;">
+    <a href="../index_4.html" class="save-btn" style="text-decoration:none;">← 記録一覧に戻る</a>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  USD/JPY · Tokyo Session · Rule Book · Flow Following Strategy
+</footer>
+</body>
+</html>
