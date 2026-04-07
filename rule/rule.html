@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ルール | トレード記録</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+
+    :root {
+      --bg:     #0d1117;
+      --bg2:    #0f1318;
+      --bg3:    #161b22;
+      --bg4:    #1c2128;
+      --border: #21262d;
+      --text:   #e6edf3;
+      --text2:  #8b949e;
+      --text3:  #4d5566;
+      --blue:   #58a6ff;
+      --green:  #3fb950;
+      --yellow: #d29922;
+      --red:    #f85149;
+      --purple: #bc8cff;
+      --r:  6px;
+      --r2: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .site-header {
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .site-title {
+      font-size: 16px; font-weight: 700; color: var(--text);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .pair-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 600;
+      padding: 2px 8px;
+      background: #1f6feb22; border: 1px solid #1f6feb55;
+      border-radius: 4px; color: var(--blue);
+    }
+    .nav-btn {
+      color: var(--text2); text-decoration: none;
+      padding: 6px 12px; border: 1px solid var(--border);
+      border-radius: var(--r); font-size: 12px;
+      transition: all .2s;
+    }
+    .nav-btn:hover { color: var(--text); border-color: var(--blue); }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+    }
+    .back-link {
+      display: inline-block;
+      color: var(--text3); text-decoration: none;
+      font-size: 12px; margin-bottom: 28px;
+      transition: color .2s;
+    }
+    .back-link:hover { color: var(--blue); }
+
+    /* ── Section title ── */
+    .section-title {
+      font-size: 11px; font-weight: 700;
+      color: var(--text3);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin: 40px 0 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--r2);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 14px 20px 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-title {
+      font-size: 13px; font-weight: 700; color: var(--text);
+    }
+    .card-body { padding: 18px 20px; }
+
+    /* ── Concept card ── */
+    .concept-card {
+      background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--r2);
+      padding: 28px;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .concept-card::before {
+      content: '';
+      position: absolute; top: -60px; right: -60px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, #58a6ff12 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .concept-title {
+      font-size: 20px; font-weight: 700; color: var(--text);
+      margin-bottom: 8px;
+    }
+    .concept-tags {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px;
+    }
+    .ctag {
+      padding: 3px 10px; border-radius: 6px; font-size: 11px;
+      font-family: 'JetBrains Mono', monospace; font-weight: 600;
+    }
+    .ctag.blue   { background: #1f6feb22; border: 1px solid #1f6feb55; color: var(--blue); }
+    .ctag.green  { background: #3fb95022; border: 1px solid #3fb95055; color: var(--green); }
+    .ctag.yellow { background: #d2992222; border: 1px solid #d2992255; color: var(--yellow); }
+    .ctag.purple { background: #bc8cff22; border: 1px solid #bc8cff55; color: var(--purple); }
+    .concept-desc {
+      font-size: 13px; color: var(--text2); line-height: 1.85;
+    }
+    .concept-desc strong { color: var(--text); }
+
+    /* ── Trigger boxes ── */
+    .trigger-box {
+      background: var(--bg4);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--blue);
+      border-radius: var(--r);
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .trigger-label {
+      font-size: 11px; color: var(--text3); text-transform: uppercase;
+      letter-spacing: .08em; min-width: 80px;
+    }
+    .trigger-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px; font-weight: 700; color: var(--text);
+    }
+    .trigger-note { font-size: 12px; color: var(--text3); }
+    .trigger-box.green  { border-left-color: var(--green); }
+    .trigger-box.yellow { border-left-color: var(--yellow); }
+    .trigger-box.red    { border-left-color: var(--red); }
+
+    /* ── Steps ── */
+    .steps { display: flex; flex-direction: column; gap: 8px; }
+    .step {
+      display: flex; align-items: flex-start; gap: 14px;
+      background: var(--bg4); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 14px 16px;
+    }
+    .step-num {
+      flex-shrink: 0;
+      width: 28px; height: 28px;
+      background: #1f6feb22; border: 1px solid #1f6feb55;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; font-weight: 700; color: var(--blue);
+    }
+    .step-body { font-size: 13px; color: var(--text2); line-height: 1.7; }
+    .step-body strong { color: var(--text); }
+    .step-body .hi { color: var(--blue); font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+    .step-body .ok { color: var(--green); font-weight: 700; }
+    .step-body .ng { color: var(--red); font-weight: 700; }
+
+    /* ── Ban list ── */
+    .ban-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .ban-list li {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px;
+      background: #f8514910; border: 1px solid #f8514930;
+      border-radius: var(--r); font-size: 13px; color: var(--text2);
+    }
+    .ban-list li .icon { font-size: 15px; flex-shrink: 0; }
+    .ban-list li strong { color: var(--text); }
+
+    /* ══════════════════════════════
+       ── 見送り判断チェックリスト ──
+       ══════════════════════════════ */
+
+    /* フィルターフェーズ */
+    .filter-phase {
+      border: 1px solid var(--border);
+      border-radius: var(--r2);
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .filter-phase-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 20px;
+      cursor: pointer;
+      user-select: none;
+      transition: background .15s;
+      position: relative;
+    }
+    .filter-phase-header:hover { background: var(--bg4); }
+    .phase-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 700;
+      padding: 3px 9px; border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .phase-badge.p1 { background: #1f6feb22; border: 1px solid #1f6feb55; color: var(--blue); }
+    .phase-badge.p2 { background: #3fb95022; border: 1px solid #3fb95055; color: var(--green); }
+    .phase-badge.p3 { background: #d2992222; border: 1px solid #d2992255; color: var(--yellow); }
+    .phase-badge.p4 { background: #bc8cff22; border: 1px solid #bc8cff55; color: var(--purple); }
+    .phase-badge.p5 { background: #f8514922; border: 1px solid #f8514955; color: var(--red); }
+    .phase-badge.p6 { background: #21262d; border: 1px solid #30363d; color: var(--text2); }
+    .phase-badge.p7 { background: #1f6feb22; border: 1px solid #1f6feb55; color: var(--blue); }
+
+    .phase-title {
+      font-size: 13px; font-weight: 700; color: var(--text);
+      flex: 1;
+    }
+    .phase-time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; color: var(--text3);
+      background: var(--bg4); border: 1px solid var(--border);
+      padding: 2px 8px; border-radius: 4px;
+    }
+    .phase-chevron {
+      font-size: 10px; color: var(--text3);
+      transition: transform .25s;
+    }
+    .filter-phase.open .phase-chevron { transform: rotate(180deg); }
+
+    .filter-phase-body {
+      display: none;
+      border-top: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .filter-phase.open .filter-phase-body { display: block; }
+
+    /* フィルターグループ */
+    .filter-group {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .filter-group:last-child { border-bottom: none; }
+    .filter-group-label {
+      font-size: 11px; color: var(--text3);
+      letter-spacing: .07em; text-transform: uppercase;
+      margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+    }
+    .filter-group-label .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--border); flex-shrink: 0;
+    }
+
+    /* チェックアイテム */
+    .check-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 9px 12px;
+      border-radius: var(--r);
+      margin-bottom: 6px;
+      cursor: pointer;
+      transition: background .15s;
+      border: 1px solid transparent;
+    }
+    .check-item:hover { background: var(--bg3); }
+    .check-item:last-child { margin-bottom: 0; }
+    .check-item input[type="checkbox"] { display: none; }
+    .check-box {
+      width: 16px; height: 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 3px;
+      flex-shrink: 0;
+      margin-top: 1px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .15s;
+      background: var(--bg3);
+    }
+    .check-item.checked .check-box {
+      background: #f8514920;
+      border-color: var(--red);
+    }
+    .check-item.checked .check-box::after {
+      content: '✕';
+      font-size: 10px; color: var(--red); font-weight: 700;
+    }
+    .check-item.checked { background: #f8514908; border-color: #f8514920; }
+    .check-text { font-size: 13px; color: var(--text2); line-height: 1.5; }
+    .check-text strong { color: var(--text); }
+    .check-text .sub {
+      display: block;
+      font-size: 11px; color: var(--text3); margin-top: 2px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* NG 判定バナー */
+    .ng-banner {
+      margin: 0 20px 16px;
+      padding: 10px 14px;
+      background: #f8514914; border: 1px solid #f8514940;
+      border-radius: var(--r);
+      font-size: 12px; color: var(--red);
+      display: flex; align-items: center; gap: 8px;
+      font-weight: 600;
+    }
+    .ng-banner::before { content: '⛔'; font-size: 14px; }
+
+    /* ── 最終ジャッジ ── */
+    .judge-box {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+      margin-bottom: 12px;
+    }
+    .judge-card {
+      border-radius: var(--r2); padding: 20px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .judge-card.ng {
+      background: #f8514910; border: 1px solid #f8514940;
+    }
+    .judge-card.ok {
+      background: #3fb95010; border: 1px solid #3fb95040;
+    }
+    .judge-card .j-label {
+      font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    }
+    .judge-card.ng .j-label { color: var(--red); }
+    .judge-card.ok .j-label { color: var(--green); }
+    .judge-card .j-cond {
+      font-size: 13px; color: var(--text2); line-height: 1.6;
+    }
+    .judge-card .j-result {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px; font-weight: 700;
+    }
+    .judge-card.ng .j-result { color: var(--red); }
+    .judge-card.ok .j-result { color: var(--green); }
+
+    /* ── 核心ルール ── */
+    .core-rule {
+      background: linear-gradient(135deg, #1f6feb10, #bc8cff08);
+      border: 1px solid #1f6feb40;
+      border-radius: var(--r2);
+      padding: 24px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .core-rule .cr-label {
+      font-size: 11px; color: var(--blue); letter-spacing: .12em;
+      text-transform: uppercase; font-weight: 700; margin-bottom: 10px;
+    }
+    .core-rule .cr-text {
+      font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.7;
+    }
+    .core-rule .cr-sub {
+      font-size: 12px; color: var(--text3); margin-top: 8px;
+    }
+
+    /* ── 心得 ── */
+    .creed-list { display: flex; flex-direction: column; gap: 10px; }
+    .creed-item {
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 18px 20px;
+      background: var(--bg4);
+      border: 1px solid var(--border);
+      border-radius: var(--r2);
+      position: relative; overflow: hidden;
+      transition: border-color .2s;
+    }
+    .creed-item:hover { border-color: #30363d; }
+    .creed-item::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px;
+    }
+    .creed-item.c-blue::before  { background: var(--blue); }
+    .creed-item.c-green::before { background: var(--green); }
+    .creed-item.c-yellow::before{ background: var(--yellow); }
+    .creed-item.c-red::before   { background: var(--red); }
+    .creed-item.c-purple::before{ background: var(--purple); }
+    .creed-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 700;
+      color: var(--text3);
+      flex-shrink: 0; padding-top: 2px;
+    }
+    .creed-body { flex: 1; }
+    .creed-main {
+      font-size: 15px; font-weight: 700; color: var(--text);
+      line-height: 1.5; margin-bottom: 6px;
+    }
+    .creed-sub {
+      font-size: 12px; color: var(--text3); line-height: 1.7;
+    }
+
+    /* ── 自問カード ── */
+    .selfq-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
+    }
+    @media (max-width: 600px) { .selfq-grid { grid-template-columns: 1fr; } }
+    .selfq-card {
+      background: var(--bg4); border: 1px solid var(--border);
+      border-radius: var(--r2); padding: 18px 16px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .selfq-q {
+      font-size: 14px; font-weight: 700; color: var(--text);
+      line-height: 1.5;
+    }
+    .selfq-hint {
+      font-size: 11px; color: var(--text3); line-height: 1.6;
+      border-top: 1px solid var(--border); padding-top: 10px;
+    }
+    .selfq-hint .ok { color: var(--green); font-weight: 700; }
+    .selfq-hint .ng { color: var(--red); font-weight: 700; }
+
+    /* ── 座右の銘 ── */
+    .creed-banner {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--r2);
+      padding: 36px 28px;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .creed-banner::before {
+      content: '';
+      position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
+      width: 400px; height: 200px;
+      background: radial-gradient(ellipse, #58a6ff08 0%, transparent 65%);
+    }
+    .cb-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; color: var(--text3); letter-spacing: .18em;
+      text-transform: uppercase; margin-bottom: 16px;
+    }
+    .cb-def {
+      font-size: 14px; color: var(--text2); line-height: 1.8;
+      margin-bottom: 12px;
+    }
+    .cb-def span {
+      font-size: 15px; font-weight: 700; color: var(--text);
+    }
+    .cb-divider {
+      width: 40px; height: 1px;
+      background: var(--border);
+      margin: 16px auto;
+    }
+    .cb-main {
+      font-size: 18px; font-weight: 700; color: var(--text);
+      line-height: 1.8; margin-bottom: 14px;
+    }
+    .cb-sub {
+      font-size: 12px; color: var(--text3);
+    }
+
+    /* ── 進捗バー ── */
+    .checklist-progress {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: var(--r2); padding: 18px 20px;
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .progress-label { font-size: 12px; color: var(--text3); flex-shrink: 0; }
+    .progress-bar-wrap {
+      flex: 1; height: 6px;
+      background: var(--bg4); border-radius: 3px; overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, var(--green), var(--blue));
+      width: 0%; transition: width .3s;
+    }
+    .progress-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; color: var(--text); font-weight: 700;
+      flex-shrink: 0;
+    }
+    .progress-status {
+      font-size: 11px; font-weight: 700;
+      flex-shrink: 0; padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .progress-status.safe { color: var(--green); background: #3fb95015; border: 1px solid #3fb95040; }
+    .progress-status.danger { color: var(--red); background: #f8514915; border: 1px solid #f8514940; }
+
+    /* ── リセット ── */
+    .reset-btn {
+      font-size: 12px; color: var(--text3);
+      background: transparent; border: 1px solid var(--border);
+      border-radius: var(--r); padding: 5px 12px; cursor: pointer;
+      transition: all .15s; font-family: 'Noto Sans JP', sans-serif;
+    }
+    .reset-btn:hover { color: var(--text); border-color: var(--text3); }
+
+    /* ── Footer / Save btn ── */
+    .save-btn {
+      display: inline-block;
+      background: #1f6feb; color: #fff;
+      padding: 10px 28px; border-radius: var(--r);
+      font-size: 14px; font-weight: 700;
+      text-decoration: none;
+      transition: background .15s;
+    }
+    .save-btn:hover { background: #388bfd; }
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 16px 24px;
+      text-align: center;
+      font-size: 11px; color: var(--text3);
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-title">
+    📊 トレード記録
+    <span class="pair-tag">USD/JPY</span>
+  </div>
+  <nav>
+    <a href="../index_4.html" class="nav-btn">← 一覧へ</a>
+  </nav>
+</header>
+
+<main class="container">
+
+  <a href="../index_4.html" class="back-link">← 月間一覧に戻る</a>
+
+  <!-- ══ コンセプト ══ -->
+  <div class="concept-card">
+    <div class="concept-title">📘 ドル円限定・東京タイム特化トレード</div>
+    <div class="concept-tags">
+      <span class="ctag blue">USD/JPY 限定</span>
+      <span class="ctag green">9〜12時のみ</span>
+      <span class="ctag yellow">フロー追従型</span>
+      <span class="ctag purple">難易度：入門</span>
+    </div>
+    <p class="concept-desc">
+      本質は<strong>「予測ではなく、事実への追従」</strong>。<br>
+      9〜10時の株式市場オープンで企業・機関の実需・大口資金移動が集中し、
+      <strong>「理由のあるトレンド」</strong>が発生する。<br>
+      これはトレンド分析でもパターン分析でもなく、
+      <strong>「異常な資金流入という事実が確認された後に追従する」フロー追従型</strong>。<br>
+      昼休みの12時で流動性が低下するため、時間制限付きのトレンドとなる。
+    </p>
+  </div>
+
+  <!-- ══ 発動条件 ══ -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">⚡ 発動条件</span>
+    </div>
+    <div class="card-body">
+      <div class="trigger-box green">
+        <div>
+          <div class="trigger-label">9〜10時の値幅</div>
+          <div class="trigger-value">30 pips 以上</div>
+        </div>
+        <div class="trigger-note">
+          これ未満はただのノイズ。<br>
+          30pips以上のときのみ手法が発動する。
+        </div>
+      </div>
+      <div class="trigger-box blue">
+        <div>
+          <div class="trigger-label">エントリー</div>
+          <div class="trigger-value">10:00 ジャスト</div>
+        </div>
+        <div class="trigger-note">
+          基本型・再現性最高。<br>
+          押し目があれば 10〜10:30 の押し戻しも可。
+        </div>
+      </div>
+      <div class="trigger-box yellow" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>
+          <div class="trigger-label">利確</div>
+          <div class="trigger-value">5〜10 pips</div>
+          <div class="trigger-note">即利確。欲張らない。スキャル設計。</div>
+        </div>
+        <div>
+          <div class="trigger-label">強制決済</div>
+          <div class="trigger-value">12:00</div>
+          <div class="trigger-note">絶対ルール。流動性低下のため保有しない。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 意思決定アルゴリズム ══ -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">🧠 意思決定アルゴリズム（6ステップ）</span>
+    </div>
+    <div class="card-body">
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body"><strong>10時にチャートを見る</strong></div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body"><strong>9〜10時の値幅を測る</strong>（ヒゲ含む）</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <span class="hi">30pips以上</span>なら方向決定：<br>
+            <span class="ok">上昇 → 買い</span> ／ <span class="ng">下落 → 売り</span>
+            （<strong>完全順張り・逆張り禁止</strong>）
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <strong>即エントリー</strong>：<span class="hi">10時ジャスト</span>
+            または <span class="hi">10〜10:30</span> の押し目
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <span class="ok">5〜10pipsで即利確</span>（欲張らない・スキャル設計）
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">6</div>
+          <div class="step-body">
+            <span class="ng">12時で強制決済</span>（絶対ルール）
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ NG ルール ══ -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">🚫 やってはいけないこと</span>
+    </div>
+    <div class="card-body">
+      <ul class="ban-list">
+        <li>
+          <span class="icon">📉</span>
+          <div><strong>30pips未満での参加</strong>：ただのノイズ。条件を満たすまで待つ。</div>
+        </li>
+        <li>
+          <span class="icon">🔁</span>
+          <div><strong>逆張り</strong>：このロジックは完全順張り設計。方向に逆らわない。</div>
+        </li>
+        <li>
+          <span class="icon">🕐</span>
+          <div><strong>11時以降のエントリー</strong>：終盤参加は不利。トレンドの勢いは10時がピーク。</div>
+        </li>
+        <li>
+          <span class="icon">🕛</span>
+          <div><strong>12時を超えた保有</strong>：流動性が低下する昼休みに持ち越さない。絶対ルール。</div>
+        </li>
+        <li>
+          <span class="icon">🌍</span>
+          <div><strong>他時間帯・他手法との混在</strong>：ロジックが崩壊する。この手法は東京の中だけで完結する独立型。</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       見送り判断チェックリスト
+       ══════════════════════════════════════════ -->
+
+  <div class="section-title">❌ 見送り判断チェックリスト</div>
+
+  <!-- 進捗 -->
+  <div class="checklist-progress">
+    <div class="progress-label">NG 項目数</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="progress-count" id="progressCount">0 / 0</div>
+    <div class="progress-status safe" id="progressStatus">PASS</div>
+    <button class="reset-btn" id="resetBtn">リセット</button>
+  </div>
+
+  <!-- ① 一次フィルター -->
+  <div class="filter-phase open" id="phase1">
+    <div class="filter-phase-header" onclick="togglePhase('phase1')">
+      <span class="phase-badge p1">① 一次</span>
+      <span class="phase-title">【最速判定】初動チェック</span>
+      <span class="phase-time">9:00〜9:15</span>
+      <span class="phase-chevron">▼</span>
+    </div>
+    <div class="filter-phase-body">
+      <div class="ng-banner">1つでも該当 → 見送り確定</div>
+
+      <div class="filter-group">
+        <div class="filter-group-label"><span class="dot"></span>初動の弱さ</div>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>初動が弱い</strong>
+            <span class="sub">15分で10pips未満 ／ 実体が小さい・ヒゲ多い ／ 陽線と陰線が混在</span>
+          </div>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>方向が不明確</strong>
+            <span class="sub">上下に振る（往復） ／ 高値・安値を更新しない → 需給なし＝終了</span>
+          </div>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② 二次フィルター -->
+  <div class="filter-phase" id="phase2">
+    <div class="filter-phase-header" onclick="togglePhase('phase2')">
+      <span class="phase-badge p2">② 二次</span>
+      <span class="phase-title">【継続性チェック】9割ふるい落とし</span>
+      <span class="phase-time">9:15〜9:30</span>
+      <span class="phase-chevron">▼</span>
+    </div>
+    <div class="filter-phase-body">
+      <div class="ng-banner">初動があってもここで9割ふるい落とす</div>
+
+      <div class="filter-group">
+        <div class="filter-group-label"><span class="dot"></span>押しの深さ</div>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>押しが深い</strong>
+            <span class="sub">押し10pips以上 ／ 戻りがダラダラ長い → 継続性なし＝終了</span>
+          </div>
+        </label>
+      </div>
+      <div class="filter-group">
+        <div class="filter-group-label"><span class="dot"></span>構造の崩れ</div>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>構造が崩れる</strong>
+            <span class="sub">MAを跨ぐ ／ 高値・安値の更新が止まる → フロー終了＝見送り</span>
+          </div>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ③ 最終フィルター -->
+  <div class="filter-phase" id="phase3">
+    <div class="filter-phase-header" onclick="togglePhase('phase3')">
+      <span class="phase-badge p3">③ 核心</span>
+      <span class="phase-title">【30pips条件】あなたの核条件</span>
+      <span class="phase-time">9:00〜10:00</span>
+      <span class="phase-chevron">▼</span>
+    </div>
+    <div class="filter-phase-body">
+      <div class="ng-banner">30pips未達 ＝ その日は触らない</div>
+
+      <div class="filter-group">
+        <div class="filter-group-label"><span class="dot"></span>値幅チェック</div>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>30pips未達</strong>
+            <span class="sub">伸びきらない ／ 途中で止まる → "異常性なし"＝その日は触らない</span>
+          </div>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>実体主導ではない</strong>
+            <span class="sub">ヒゲだらけ ／ ブレイクしても戻る → ダマシ環境＝終了</span>
+          </div>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ④ 環境認識フィルター -->
+  <div class="filter-phase" id="phase4">
+    <div class="filter-phase-header" onclick="togglePhase('phase4')">
+      <span class="phase-badge p4">④ 環境</span>
+      <span class="phase-title">【環境認識フィルター】上位足との整合</span>
+      <span class="phase-chevron">▼</span>
+    </div>
+    <div class="filter-phase-body">
+      <div class="filter-group">
+        <div class="filter-group-label"><span class="dot"></span>上位足との整合</div>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>上位足と逆行</strong>
+            <span class="sub">日足 or 1時間足に逆らう → 禁止事項＝即見送り</span>
+          </div>
+        </label>
+      </div>
+      <div class="filter-group">
+        <div class="filter-group-label"><span class="dot"></span>位置の問題</div>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>中途半端な位置</strong>
+            <span class="sub">前日高値・安値から遠い ／ キリ番（例：160円）で止まる → 燃料なし＝動かない日</span>
+          </div>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑤ 禁止事項チェック -->
+  <div class="filter-phase" id="phase5">
+    <div class="filter-phase-header" onclick="togglePhase('phase5')">
+      <span class="phase-badge p5">⑤ 禁止</span>
+      <span class="phase-title">【禁止事項チェック】最重要</span>
+      <span class="phase-chevron">▼</span>
+    </div>
+    <div class="filter-phase-body">
+      <div class="ng-banner">少しでも迷ったら → 見送り</div>
+      <div class="filter-group">
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>追いかけエントリーしたくなる</strong>
+            <span class="sub">その時点でアウト</span>
+          </div>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>継続性に"疑問"がある</strong>
+            <span class="sub">少しでも迷う → 見送り</span>
+          </div>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>タイミングを逃した</strong>
+            <span class="sub">"次を待つ"が正解</span>
+          </div>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑥ 空気フィルター -->
+  <div class="filter-phase" id="phase6">
+    <div class="filter-phase-header" onclick="togglePhase('phase6')">
+      <span class="phase-badge p6">⑥ 感覚</span>
+      <span class="phase-title">【空気フィルター】プロ領域</span>
+      <span class="phase-chevron">▼</span>
+    </div>
+    <div class="filter-phase-body">
+      <div class="filter-group">
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>空気が重い</strong>
+            <span class="sub">動きが遅い ／ 伸びても続かない ／ 市場が静か → 誰も本気じゃない＝見送り</span>
+          </div>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 最終ジャッジ ── -->
+  <div class="card" style="margin-top:16px;">
+    <div class="card-header">
+      <span class="card-title">⚖️ 最終ジャッジ</span>
+    </div>
+    <div class="card-body">
+      <div class="judge-box">
+        <div class="judge-card ng">
+          <div class="j-label">⛔ NO TRADE</div>
+          <div class="j-cond">YESが<strong>"1つでも不安"</strong>なら</div>
+          <div class="j-result">→ 見送り確定</div>
+        </div>
+        <div class="judge-card ok">
+          <div class="j-label">✅ ENTRY OK</div>
+          <div class="j-cond"><strong>完全一致</strong>のみ</div>
+          <div class="j-result">→ エントリー可</div>
+        </div>
+      </div>
+      <div class="core-rule">
+        <div class="cr-label">⚠️ 超重要ルール（核）</div>
+        <div class="cr-text">「迷ったらやらない」はルール化する</div>
+        <div class="cr-sub">"異常に動いて、異常に止まらない日以外は全部捨てる"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       心得
+       ══════════════════════════════════════════ -->
+
+  <div class="section-title">📿 心得</div>
+
+  <!-- 5つの信条 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">自分への誓い</span>
+    </div>
+    <div class="card-body">
+      <div class="creed-list">
+
+        <div class="creed-item c-blue">
+          <div class="creed-num">01</div>
+          <div class="creed-body">
+            <div class="creed-main">見送りは損失ではない。待つことが仕事だ。</div>
+            <div class="creed-sub">動かなかった日を後悔しない。条件が揃わなかった日に触らなかった自分を褒める。見送りの数が、規律の証拠になる。</div>
+          </div>
+        </div>
+
+        <div class="creed-item c-yellow">
+          <div class="creed-num">02</div>
+          <div class="creed-body">
+            <div class="creed-main">「動きたい」という衝動は、相場ではなく自分の中にある。</div>
+            <div class="creed-sub">焦りを感じたとき、それはサインではなくノイズだ。相場が呼んでいるのではなく、感情が叫んでいるだけ。</div>
+          </div>
+        </div>
+
+        <div class="creed-item c-green">
+          <div class="creed-num">03</div>
+          <div class="creed-body">
+            <div class="creed-main">回数を減らすほど、1回の重みが増す。</div>
+            <div class="creed-sub">この手法は月に数回しか発動しないことがある。それでいい。少ない弾数で正確に撃つ設計だ。多く打てば精度は落ちる。</div>
+          </div>
+        </div>
+
+        <div class="creed-item c-purple">
+          <div class="creed-num">04</div>
+          <div class="creed-body">
+            <div class="creed-main">迷いが生まれた瞬間、答えはもう出ている。</div>
+            <div class="creed-sub">確信のないエントリーに優位性はない。「どうしようかな」と思った時点でノートレードが確定する。迷いは条件未達の別名だ。</div>
+          </div>
+        </div>
+
+        <div class="creed-item c-red">
+          <div class="creed-num">05</div>
+          <div class="creed-body">
+            <div class="creed-main">今日が自分の戦場でないなら、明日を大切にする。</div>
+            <div class="creed-sub">無理に戦った日の傷は、翌日の判断を狂わせる。今日の見送りは、明日の冷静さへの投資だ。</div>
+          </div>
+        </div>
+
+        <div class="creed-item c-green">
+          <div class="creed-num">06</div>
+          <div class="creed-body">
+            <div class="creed-main">この戦略は「選ばれた日だけで勝つ設計」だ。</div>
+            <div class="creed-sub">トレード回数が少ないのは正常。見送りが多いほど正しい。これはサボりではなく、設計通りに動いている証拠だ。</div>
+          </div>
+        </div>
+
+        <div class="creed-item c-blue">
+          <div class="creed-num">07</div>
+          <div class="creed-body">
+            <div class="creed-main">見送りとは、勝てない日の理由を理解して排除する技術だ。</div>
+            <div class="creed-sub">感情でやめるのではない。構造で判断して切り捨てる。これが見送りの本質であり、再現性の源泉だ。</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- エントリー前の自問 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">🪞 エントリー前の3つの自問</span>
+    </div>
+    <div class="card-body">
+      <div class="selfq-grid">
+        <div class="selfq-card">
+          <div class="selfq-q">この動きに、理由があるか？</div>
+          <div class="selfq-hint">
+            <span class="ok">YES</span> → 機関・実需の資金が動いた痕跡がある<br>
+            <span class="ng">NO</span> → ただのノイズ。見送る。
+          </div>
+        </div>
+        <div class="selfq-card">
+          <div class="selfq-q">今から入って、出口が見えているか？</div>
+          <div class="selfq-hint">
+            <span class="ok">YES</span> → 5〜10pipsの利確と12時決済が頭にある<br>
+            <span class="ng">NO</span> → 計画がない状態。触らない。
+          </div>
+        </div>
+        <div class="selfq-card">
+          <div class="selfq-q">今、迷っていないか？</div>
+          <div class="selfq-hint">
+            <span class="ok">NO</span> → 確信がある。条件が揃っている。<br>
+            <span class="ng">YES</span> → その迷いが答えだ。即見送り。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 座右の銘 -->
+  <div class="creed-banner">
+    <div class="cb-label">完成版まとめ</div>
+    <div class="cb-main">
+      異常に動いて、異常に止まらない日以外は<br>全部捨てる。
+    </div>
+    <div class="cb-divider"></div>
+    <div class="cb-def">
+      見送りとは<br>
+      <span>「勝てない日の理由を理解して排除する技術」</span>
+    </div>
+    <div class="cb-sub">見送り精度とは、機会損失を恐れない力のことだ。</div>
+  </div>
+
+  <div style="text-align:center;margin-top:32px;">
+    <a href="../index_4.html" class="save-btn" style="text-decoration:none;">← 記録一覧に戻る</a>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  USD/JPY · Tokyo Session · Rule Book · Flow Following Strategy
+</footer>
+
+<script>
+  // ── アコーディオン ──
+  function togglePhase(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle('open');
+  }
+
+  // ── チェック ──
+  function toggleCheck(label) {
+    label.classList.toggle('checked');
+    updateProgress();
+  }
+
+  // ── 進捗 ──
+  function updateProgress() {
+    const items = document.querySelectorAll('.check-item');
+    const checked = document.querySelectorAll('.check-item.checked');
+    const total = items.length;
+    const count = checked.length;
+    const pct = total > 0 ? (count / total) * 100 : 0;
+
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressCount').textContent = count + ' / ' + total;
+
+    const status = document.getElementById('progressStatus');
+    if (count === 0) {
+      status.textContent = 'PASS';
+      status.className = 'progress-status safe';
+    } else {
+      status.textContent = 'NO TRADE';
+      status.className = 'progress-status danger';
+    }
+  }
+
+  // ── リセット ──
+  document.getElementById('resetBtn').addEventListener('click', function() {
+    document.querySelectorAll('.check-item').forEach(function(item) {
+      item.classList.remove('checked');
+    });
+    updateProgress();
+  });
+
+  updateProgress();
+</script>
+
+</body>
+</html>
