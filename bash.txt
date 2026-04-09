@@ -8,3 +8,14 @@ Gitに保存
 git add nissi/20260405.html
 git commit -m "日誌追加: 2026-04-05"
 git push
+
+
+git add nissi/20260409.html
+git add nissi/20260410.html
+git commit -m "日誌追加: 2026-04-09 & 10"
+git push
+
+
+git add nissi/
+git commit -m "日誌追加: 2026-04-09 & 10"
+git push
