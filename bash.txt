@@ -1,3 +1,4 @@
+✅ scripts/new_day.sh使い方
 実行権限
 chmod +x scripts/new_day.sh
 
@@ -19,3 +20,21 @@ git push
 git add nissi/
 git commit -m "日誌追加: 2026-04-09 & 10"
 git push
+
+
+✅ scripts/new_days.sh使い方まとめ
+▶ 単日
+bash scripts/new_days.sh 20260413
+▶ 範囲（今回の本命🔥）
+bash scripts/new_days.sh 20260413 20260417
+▶ 今日
+bash scripts/new_days.sh
+▶ Gitまで一発（最強）
+AUTO_GIT=1 bash scripts/new_days.sh 20260413 20260417
+🚀 Git自動まで含めた完全版
+chmod +x scripts/new_days.sh && AUTO_GIT=1 ./scripts/new_days.sh 20260413 20260417
+👉 これで
+✔ 権限付与
+✔ 5日分生成
+✔ add / commit / push
+全部一発
