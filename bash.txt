@@ -38,3 +38,7 @@ chmod +x scripts/new_days.sh && AUTO_GIT=1 ./scripts/new_days.sh 20260413 202604
 ✔ 5日分生成
 ✔ add / commit / push
 全部一発
+
+git add .
+git commit -m "日誌追加: 2026-04-13〜17"
+git push
