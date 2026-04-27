@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026-04-30 | トレード記録</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .env-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;}
+    @media(max-width:640px){.env-grid-3{grid-template-columns:1fr;}}
+    .yn-group{display:flex;gap:8px;}
+    .yn{flex:1;text-align:center;padding:7px 0;border-radius:6px;font-size:13px;font-weight:700;
+      border:1px solid var(--border);background:var(--bg2);color:var(--text3);cursor:pointer;
+      transition:all .12s;user-select:none;}
+    .yn:hover{border-color:var(--bord2);color:var(--text2);}
+    .yn.sel-y{background:#3fb95022;border-color:var(--green);color:var(--green);}
+    .yn.sel-n{background:#8b949e18;border-color:var(--text3);color:var(--text2);}
+    .timing-group{display:flex;gap:8px;}
+    .timing-btn{flex:1;text-align:center;padding:8px 4px;border-radius:6px;font-size:12px;
+      font-weight:700;border:1px solid var(--border);background:var(--bg2);color:var(--text3);
+      cursor:pointer;transition:all .12s;user-select:none;}
+    .timing-btn:hover{border-color:var(--bord2);color:var(--text2);}
+    .timing-btn.sel{background:#1f6feb22;border-color:var(--blue);color:var(--blue);}
+    .pips-input-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);
+      padding:16px 20px;display:flex;align-items:center;gap:16px;}
+    .pips-input-box .field-label{margin-bottom:0;min-width:80px;}
+    #pipsResult{font-size:28px;font-weight:700;width:140px;text-align:right;padding:6px 12px;}
+    #pipsResult:focus{border-color:var(--blue);}
+    .ci-img{width:100%;height:200px;object-fit:contain;display:block;background:var(--bg);
+      padding:8px;cursor:zoom-in;transition:opacity .15s;}
+    .ci-img:hover{opacity:.85;}
+    .ci-img.hidden{display:none;}
+    #lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:10001;
+      align-items:center;justify-content:center;cursor:zoom-out;}
+    #lightbox.open{display:flex;}
+    #lb-img{max-width:96vw;max-height:94vh;object-fit:contain;border-radius:6px;
+      box-shadow:0 8px 60px #0009;animation:lbIn .18s ease;}
+    @keyframes lbIn{from{transform:scale(.9);opacity:0;}to{transform:scale(1);opacity:1;}}
+    #lb-close{position:fixed;top:14px;right:18px;font-size:32px;color:#fff;cursor:pointer;
+      opacity:.65;transition:opacity .15s;background:none;border:none;line-height:1;}
+    #lb-close:hover{opacity:1;}
+    /* 保存ステータス */
+    .sync-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 10px;border-radius:10px;}
+    .sync-badge.saved  {background:#3fb95022;border:1px solid #3fb95055;color:var(--green);}
+    .sync-badge.unsaved{background:#d2992222;border:1px solid #d2992255;color:var(--yellow);}
+    .sync-badge.error  {background:#f8514922;border:1px solid #f8514955;color:var(--red);}
+    .sync-badge.loading{background:#1f6feb22;border:1px solid #1f6feb55;color:var(--blue);}
+    /* PAT インジケーター */
+    .pat-indicator{display:inline-flex;align-items:center;gap:5px;font-size:11px;
+      color:var(--text3);cursor:pointer;padding:4px 8px;border-radius:6px;
+      border:1px solid var(--border);background:var(--bg3);}
+    .pat-indicator:hover{border-color:var(--bord2);color:var(--text2);}
+    .pat-dot{width:7px;height:7px;border-radius:50%;background:var(--text3);}
+    .pat-dot.ok{background:var(--green);}
+    .pat-dot.ng{background:var(--red);}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-title">📊 トレード記録 <span class="pair-tag">USD/JPY</span></div>
+  <nav class="header-nav">
+    <a href="../index_4.html" class="nav-btn">← 一覧へ</a>
+    <a href="../my_rule5.html" class="nav-btn" style="background:#1f6feb22;border-color:#1f6feb55;color:var(--blue);">📘 ルール</a>
+    <span class="pat-indicator" id="patPill" onclick="GHS.showPATModal(()=>location.reload())" title="クリックでPAT設定">
+      <span class="pat-dot" id="patDot"></span>
+      <span id="patLabel">PAT</span>
+    </span>
+  </nav>
+</header>
+
+<main class="container">
+
+  <a href="../index_4.html" class="back-link">← 月間一覧に戻る</a>
+
+  <!-- メインコンテンツ -->
+  <div id="main-content">
+
+    <div class="page-header">
+      <h1>📅 <span class="date-mono">2026-04-30</span>
+        <span style="font-size:14px;color:var(--text3);font-weight:400;">（木曜日）</span>
+      </h1>
+    </div>
+
+    <!-- ══ 環境分析 ══ -->
+    <div class="card">
+      <div class="card-header"><span class="card-title">🌐 環境分析</span></div>
+      <div class="card-body">
+
+        <div class="env-grid">
+          <div class="env-item">
+            <div class="env-label">📅 日足 方向</div>
+            <div class="opt-group" id="nikki-opts">
+              <span class="opt g" data-val="up"   onclick="sel('nikki','up',  this,'g')">↑ 上昇</span>
+              <span class="opt r" data-val="down" onclick="sel('nikki','down',this,'r')">↓ 下降</span>
+              <span class="opt"   data-val="flat" onclick="sel('nikki','flat',this,'')">→ 方向感なし</span>
+            </div>
+          </div>
+          <div class="env-item">
+            <div class="env-label">⏱ 短期足 トレンド方向</div>
+            <div class="opt-group" id="short-opts">
+              <span class="opt g" data-val="up"   onclick="sel('short','up',  this,'g')">↑ 上昇</span>
+              <span class="opt r" data-val="down" onclick="sel('short','down',this,'r')">↓ 下降</span>
+              <span class="opt"   data-val="flat" onclick="sel('short','flat',this,'')">→ 方向感なし</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="env-item" style="margin-bottom:12px;">
+          <div class="env-label">🕘 9:00〜10:00 値動き</div>
+          <div class="opt-group" id="move-opts">
+            <span class="opt g" data-val="up_s"   onclick="sel('move','up_s',  this,'g')">↑↑ 強い上昇</span>
+            <span class="opt g" data-val="up_g"   onclick="sel('move','up_g',  this,'g')">↑ 緩やかな上昇</span>
+            <span class="opt r" data-val="down_s" onclick="sel('move','down_s',this,'r')">↓↓ 強い下降</span>
+            <span class="opt r" data-val="down_g" onclick="sel('move','down_g',this,'r')">↓ 緩やかな下降</span>
+            <span class="opt"   data-val="flat"   onclick="sel('move','flat',  this,'')">→ 方向感なし</span>
+          </div>
+        </div>
+
+        <div class="env-grid-3">
+          <div class="env-item">
+            <div class="env-label">⚡ 異常性</div>
+            <div class="yn-group">
+              <span class="yn" data-group="abnormal" data-val="yes" onclick="selYN('abnormal','yes',this)">有り</span>
+              <span class="yn" data-group="abnormal" data-val="no"  onclick="selYN('abnormal','no', this)">無し</span>
+            </div>
+          </div>
+          <div class="env-item">
+            <div class="env-label">🔄 継続性</div>
+            <div class="yn-group">
+              <span class="yn" data-group="continuity" data-val="yes" onclick="selYN('continuity','yes',this)">有り</span>
+              <span class="yn" data-group="continuity" data-val="no"  onclick="selYN('continuity','no', this)">無し</span>
+            </div>
+          </div>
+          <div class="env-item">
+            <div class="env-label">🎯 エントリータイミング</div>
+            <div class="timing-group">
+              <span class="timing-btn" data-val="10just"   onclick="selTiming('10just',  this)">10:00<br>just</span>
+              <span class="timing-btn" data-val="pullback" onclick="selTiming('pullback',this)">押し<br>戻し</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-box">
+            <div class="field-label">📏 9〜10時 値幅（pips）</div>
+            <input type="number" id="valWidth" class="field-input" placeholder="例: 35.0" step="0.1">
+          </div>
+          <div class="env-item">
+            <div class="env-label">🏹 行動</div>
+            <div class="opt-group" id="action-opts">
+              <span class="opt"   data-val="buy"   onclick="sel('action','buy',  this,'')">🟦 買い</span>
+              <span class="opt"   data-val="sell"  onclick="sel('action','sell', this,'p')">🟪 売り</span>
+              <span class="opt y" data-val="watch" onclick="sel('action','watch',this,'y')">👀 見送り</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ 結果 ══ -->
+    <div class="card">
+      <div class="card-header"><span class="card-title">💰 結果</span></div>
+      <div class="card-body">
+        <div class="pips-input-box">
+          <div class="field-label">pips</div>
+          <input type="number" id="pipsResult" class="field-input" placeholder="0.0" step="0.1">
+          <span style="font-size:13px;color:var(--text3);">pips</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ チャート画像（日足 + 15分足） ══ -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">📊 チャート</span>
+        <span style="font-size:11px;color:var(--text3);">タップで拡大</span>
+      </div>
+      <div class="card-body">
+        <div class="chart-images">
+          <div class="ci-box">
+            <div class="ci-label">📅 日足チャート</div>
+            <img id="img-day" class="ci-img"
+                 src="../images/20260430_day.png" alt="日足チャート 2026-04-30"
+                 onclick="openLB(this.src)"
+                 onload="imgOk('img-day','ph-day')" onerror="imgNg('img-day','ph-day')">
+            <div id="ph-day" class="ci-placeholder" style="display:none;">
+              <span style="font-size:28px;">📈</span><span>画像が見つかりません</span>
+              <code style="font-size:10px;color:var(--text3);">images/20260430_day.png</code>
+            </div>
+          </div>
+          <div class="ci-box">
+            <div class="ci-label">⏱ 15分足チャート</div>
+            <img id="img-15" class="ci-img"
+                 src="../images/20260430_15.png" alt="15分足チャート 2026-04-30"
+                 onclick="openLB(this.src)"
+                 onload="imgOk('img-15','ph-15')" onerror="imgNg('img-15','ph-15')">
+            <div id="ph-15" class="ci-placeholder" style="display:none;">
+              <span style="font-size:28px;">📊</span><span>画像が見つかりません</span>
+              <code style="font-size:10px;color:var(--text3);">images/20260430_15.png</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ メモ ══ -->
+    <div class="card">
+      <div class="card-header"><span class="card-title">📝 メモ・振り返り</span></div>
+      <div class="card-body">
+        <textarea id="memoText" class="memo-textarea"
+          placeholder="エントリー根拠・押し目のタイミング・反省など自由に記入..."></textarea>
+      </div>
+    </div>
+
+    <!-- 保存 -->
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <button class="save-btn" id="save-btn" onclick="doSave()">💾 保存する</button>
+      <span class="sync-badge unsaved" id="sync-badge">● 未保存</span>
+      <a href="../index_4.html" class="nav-btn" style="margin-left:auto;">← 一覧へ戻る</a>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;margin-top:24px;">
+      <a href="20260429.html" class="nav-btn">← 前日</a>
+      <a href="20260501.html" class="nav-btn">次の日 →</a>
+    </div>
+
+  </div><!-- /main-content -->
+</main>
+
+<footer class="site-footer">2026-04-30 · USD/JPY · Tokyo Session · GitHub Storage</footer>
+
+<div id="lightbox" onclick="closeLB()">
+  <button id="lb-close" onclick="closeLB()">✕</button>
+  <img id="lb-img" src="" alt="拡大チャート">
+</div>
+
+<script src="../js/github-storage.js"></script>
+<script>
+const DATE_KEY = '20260430';
+const S = { nikki:'', short:'', move:'', abnormal:'', continuity:'', timing:'', action:'' };
+
+/* ── PAT インジケーター ── */
+function updatePATIndicator() {
+  const dot = document.getElementById('patDot'), lb = document.getElementById('patLabel');
+  if (GHS.hasPAT()) { dot.className='pat-dot ok'; lb.textContent='認証済み'; }
+  else              { dot.className='pat-dot ng'; lb.textContent='PAT未設定'; }
+}
+
+/* ── Lightbox ── */
+function openLB(src){ document.getElementById('lb-img').src=src; document.getElementById('lightbox').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeLB(){ document.getElementById('lightbox').classList.remove('open'); document.body.style.overflow=''; }
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeLB(); });
+
+/* ── 画像フォールバック ── */
+function imgOk(i,p){ document.getElementById(i).classList.remove('hidden'); document.getElementById(p).style.display='none'; }
+function imgNg(i,p){ document.getElementById(i).classList.add('hidden'); document.getElementById(p).style.display='flex'; }
+window.addEventListener('load',()=>{
+  ['day','15'].forEach(k=>{
+    const img=document.getElementById(`img-${k}`);
+    if(img&&img.complete){ img.naturalWidth>0?imgOk(`img-${k}`,`ph-${k}`):imgNg(`img-${k}`,`ph-${k}`); }
+  });
+});
+
+/* ── ボタン選択 ── */
+function sel(g,v,el,c){
+  const m={nikki:'nikki-opts',short:'short-opts',move:'move-opts',action:'action-opts'};
+  document.querySelectorAll(`#${m[g]} .opt`).forEach(o=>o.className=o.className.replace(/\bsel\b|\b[grpy]\b/g,'').trim());
+  el.classList.add('sel'); if(c) el.classList.add(c); S[g]=v; markUnsaved(); colorPips();
+}
+function selYN(g,v,el){
+  document.querySelectorAll(`[data-group="${g}"]`).forEach(o=>o.className=o.className.replace(/\bsel-[yn]\b/g,'').trim());
+  el.classList.add(v==='yes'?'sel-y':'sel-n'); S[g]=v; markUnsaved();
+}
+function selTiming(v,el){ document.querySelectorAll('.timing-btn').forEach(o=>o.classList.remove('sel')); el.classList.add('sel'); S.timing=v; markUnsaved(); }
+function colorPips(){
+  const v=parseFloat(document.getElementById('pipsResult').value);
+  document.getElementById('pipsResult').style.color=isNaN(v)?'':v>0?'var(--green)':v<0?'var(--red)':'';
+}
+
+/* ── 保存バッジ ── */
+function markUnsaved(){ const b=document.getElementById('sync-badge'); b.className='sync-badge unsaved'; b.textContent='● 未保存'; }
+function markSaved(ts, src){
+  const b=document.getElementById('sync-badge');
+  b.className='sync-badge saved';
+  const srcLabel = src==='github' ? ' (GitHub同期済)' : src==='local' ? ' (この端末に保存)' : '';
+  b.textContent=`✓ 保存済${srcLabel}${ts?' · '+ts:''}`;
+}
+function markError(m) { const b=document.getElementById('sync-badge'); b.className='sync-badge error'; b.textContent=`✕ ${m}`; }
+function markLoading(){ const b=document.getElementById('sync-badge'); b.className='sync-badge loading'; b.textContent='⏳ 保存中…'; }
+
+/* ── 保存（GHS v3: localStorage即時 + GitHub任意） ── */
+async function doSave() {
+  const data = {
+    date:'20260430', label:'2026-04-30',
+    nikkiEnv:S.nikki, shortEnv:S.short, move9to10:S.move,
+    abnormal:S.abnormal, continuity:S.continuity, timing:S.timing, action:S.action,
+    valWidth:parseFloat(document.getElementById('valWidth').value)||0,
+    pips:parseFloat(document.getElementById('pipsResult').value)||0,
+    memo:document.getElementById('memoText').value,
+    savedAt:new Date().toISOString()
+  };
+  markLoading();
+  document.getElementById('save-btn').disabled = true;
+
+  await GHS.saveWithPAT(
+    '20260430', data,
+    (src) => {
+      markSaved(new Date().toLocaleTimeString('ja-JP'), src);
+      document.getElementById('save-btn').disabled = false;
+      updatePATIndicator();
+    },
+    (e) => { markError(e); document.getElementById('save-btn').disabled = false; }
+  );
+}
+
+/* ── フォーム復元 ── */
+function restoreForm(d) {
+  const tryOpt = (gid, key, cfn) => {
+    if (!d[key]) return;
+    const el = document.querySelector(`#${gid} [data-val="${d[key]}"]`);
+    if (el) { el.classList.add('sel'); const c=cfn(d[key]); if(c) el.classList.add(c); }
+  };
+  tryOpt('nikki-opts','nikkiEnv',  v=>v==='up'?'g':v==='down'?'r':'');
+  tryOpt('short-opts','shortEnv',  v=>v==='up'?'g':v==='down'?'r':'');
+  tryOpt('move-opts', 'move9to10', v=>v.startsWith('up')?'g':v.startsWith('down')?'r':'');
+  tryOpt('action-opts','action',   v=>v==='sell'?'p':v==='watch'?'y':'');
+  Object.assign(S, {nikki:d.nikkiEnv||'',short:d.shortEnv||'',move:d.move9to10||'',action:d.action||''});
+  ['abnormal','continuity'].forEach(g => {
+    if (!d[g]) return;
+    const el = document.querySelector(`[data-group="${g}"][data-val="${d[g]}"]`);
+    if (el) { el.classList.add(d[g]==='yes'?'sel-y':'sel-n'); S[g]=d[g]; }
+  });
+  if (d.timing) { const el=document.querySelector(`.timing-btn[data-val="${d.timing}"]`); if(el){el.classList.add('sel');S.timing=d.timing;} }
+  if (d.valWidth) document.getElementById('valWidth').value = d.valWidth;
+  if (d.pips)   { document.getElementById('pipsResult').value = d.pips; colorPips(); }
+  if (d.memo)     document.getElementById('memoText').value = d.memo;
+}
+
+/* ── 初期化（localStorage 即時表示 → GitHub バックグラウンド同期） ── */
+async function init() {
+  updatePATIndicator();
+  document.getElementById('pipsResult').addEventListener('input', ()=>{colorPips();markUnsaved();});
+  document.getElementById('memoText').addEventListener('input', markUnsaved);
+
+  // オーバーレイを即座に消してフォームを表示
+  document.getElementById('load-overlay').style.display = 'none';
+  document.getElementById('main-content').style.display = '';
+
+  try {
+    // localStorage から即時読み込み（同期的に近い速度）
+    const data = await GHS.loadRecord('20260430');
+    if (data) {
+      restoreForm(data);
+      const src = data.savedAt ? new Date(data.savedAt).toLocaleString('ja-JP') : '';
+      markSaved(src);
+    } else {
+      markUnsaved();
+    }
+  } catch (e) {
+    console.warn('init error:', e);
+    markUnsaved();
+  }
+}
+
+init();
+</script>
+</body>
+</html>
