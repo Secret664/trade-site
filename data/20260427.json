@@ -1,15 +1,15 @@
 {
   "date": "20260427",
   "label": "2026-04-27",
-  "nikkiEnv": "up",
-  "shortEnv": "flat",
-  "move9to10": "down_g",
-  "abnormal": "no",
-  "continuity": "no",
+  "nikkiEnv": "",
+  "shortEnv": "",
+  "move9to10": "",
+  "abnormal": "",
+  "continuity": "",
   "timing": "",
   "action": "watch",
   "valWidth": 0,
-  "pips": 16.5,
+  "pips": 0,
   "memo": "■ 日足（D1）環境認識\n上昇トレンド継続中だが、伸び切りゾーン\n上昇は継続しているが「新規の強い推進力」はやや鈍化\n\n■ 1時間足（H1）中期構造\nレンジ気味の上昇トレンド終盤\n159.50付近で明確に上値が重い\nEMAに対して価格が収束 → エネルギー圧縮状態\n\n■ 1分足（M1）9:00〜の挙動\n▼ 初動の質が悪い\n9:00直後に強い陰線が出ていない\nダラダラ下げ → 後半加速\n",
-  "savedAt": "2026-04-27T13:29:28.446Z"
+  "savedAt": "2026-04-27T13:30:15.198Z"
 }
