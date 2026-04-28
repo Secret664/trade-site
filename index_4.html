@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>東京フロー戦略 | 2026.4</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#080b10;--bg2:#0c1018;--bg3:#111720;--bg4:#161d28;
+      --border:#1e2633;--border2:#263040;
+      --text:#dce8f5;--text2:#7a93b0;--text3:#3d5068;
+      --blue:#4d9fff;--green:#33c97a;--yellow:#f0a030;--red:#f04060;--cyan:#30d0c8;
+      --r:4px;--r2:8px;--r3:12px;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;
+      font-size:14px;line-height:1.6;min-height:100vh;overflow-x:hidden;}
+    body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+      background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.08) 2px,rgba(0,0,0,.08) 4px);}
+    body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+      background-image:linear-gradient(rgba(77,159,255,.025) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(77,159,255,.025) 1px,transparent 1px);
+      background-size:48px 48px;}
+    .page-wrap{position:relative;z-index:1;}
+    /* HEADER */
+    .site-header{position:sticky;top:0;z-index:200;display:flex;align-items:center;
+      justify-content:space-between;padding:0 24px;height:52px;
+      background:rgba(8,11,16,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+    .site-header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,#4d9fff44,transparent);}
+    .h-left{display:flex;align-items:center;gap:12px;}
+    .logo{width:30px;height:30px;border:1px solid var(--border2);border-radius:var(--r);
+      display:flex;align-items:center;justify-content:center;font-size:14px;background:var(--bg3);}
+    .h-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;letter-spacing:.04em;}
+    .h-pair{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;
+      padding:2px 7px;border-radius:3px;background:rgba(77,159,255,.1);
+      border:1px solid rgba(77,159,255,.25);color:var(--blue);}
+    .h-right{display:flex;gap:8px;align-items:center;}
+    .nav-pill{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;
+      font-size:12px;font-weight:600;text-decoration:none;border:1px solid var(--border2);
+      color:var(--text2);background:var(--bg3);transition:all .2s;cursor:pointer;}
+    .nav-pill:hover{color:var(--text);border-color:var(--blue);background:rgba(77,159,255,.08);}
+    /* STATUS */
+    .status-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;
+      border-radius:20px;font-size:11px;font-weight:600;
+      font-family:'JetBrains Mono',monospace;}
+    .pulse{width:6px;height:6px;border-radius:50%;animation:pulse 1.8s ease-in-out infinite;}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.7);}}
+    .b-active{background:rgba(51,201,122,.12);border:1px solid rgba(51,201,122,.3);color:var(--green);}
+    .b-active .pulse{background:var(--green);}
+    .b-out{background:rgba(77,159,255,.12);border:1px solid rgba(77,159,255,.3);color:var(--blue);}
+    .b-out .pulse{background:var(--blue);}
+    .b-wknd{background:rgba(240,160,48,.12);border:1px solid rgba(240,160,48,.3);color:var(--yellow);}
+    .b-wknd .pulse{background:var(--yellow);}
+    .b-done{background:rgba(122,147,176,.12);border:1px solid rgba(122,147,176,.3);color:var(--text2);}
+    /* LAYOUT */
+    .container{width:100%;padding:28px 28px 80px;}
+    /* HERO */
+    .hero{position:relative;border:1px solid var(--border2);border-radius:var(--r3);
+      overflow:hidden;margin-bottom:20px;}
+    .hero-bg{position:absolute;inset:0;background:
+      radial-gradient(ellipse 60% 80% at 80% 50%,rgba(77,159,255,.06),transparent 60%),
+      radial-gradient(ellipse 40% 60% at 10% 20%,rgba(51,201,122,.04),transparent 55%),
+      linear-gradient(160deg,#0c1828,var(--bg2) 50%,#0a1018);}
+    .hero-grid{position:absolute;inset:0;pointer-events:none;
+      background-image:linear-gradient(rgba(77,159,255,.04) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(77,159,255,.04) 1px,transparent 1px);
+      background-size:32px 32px;}
+    .hero-inner{position:relative;z-index:1;display:grid;grid-template-columns:1fr auto;
+      gap:24px;align-items:center;padding:36px 36px 36px 40px;}
+    @media(max-width:680px){.hero-inner{grid-template-columns:1fr;padding:28px 20px;}}
+    .eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;
+      letter-spacing:.2em;text-transform:uppercase;color:var(--cyan);margin-bottom:10px;
+      display:flex;align-items:center;gap:8px;}
+    .eyebrow::before{content:'';width:20px;height:1px;background:var(--cyan);}
+    .hero-title{font-family:'Syne',sans-serif;font-size:clamp(20px,3vw,26px);font-weight:800;
+      line-height:1.25;margin-bottom:10px;}
+    .hero-title .accent{color:var(--blue);}
+    .hero-sub{font-size:13px;color:var(--text2);line-height:1.7;max-width:480px;}
+    .hero-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;}
+    .htag{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;
+      padding:3px 9px;border-radius:3px;letter-spacing:.04em;}
+    .ht1{background:rgba(77,159,255,.1);border:1px solid rgba(77,159,255,.2);color:var(--blue);}
+    .ht2{background:rgba(51,201,122,.1);border:1px solid rgba(51,201,122,.2);color:var(--green);}
+    .ht3{background:rgba(240,160,48,.1);border:1px solid rgba(240,160,48,.2);color:var(--yellow);}
+    .ht4{background:rgba(48,208,200,.1);border:1px solid rgba(48,208,200,.2);color:var(--cyan);}
+    .rule-card{flex-shrink:0;width:190px;background:rgba(8,11,16,.7);
+      border:1px solid var(--border2);border-radius:var(--r2);padding:20px;
+      text-decoration:none;display:flex;flex-direction:column;gap:12px;
+      transition:border-color .25s,transform .25s;}
+    .rule-card:hover{border-color:var(--blue);transform:translateY(-2px);}
+    .rc-label{font-size:10px;font-weight:600;font-family:'JetBrains Mono',monospace;
+      letter-spacing:.12em;text-transform:uppercase;color:var(--blue);}
+    .rc-title{font-size:13px;font-weight:700;color:var(--text);line-height:1.45;}
+    .rc-arrow{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;}
+    .rule-card:hover .rc-arrow{color:var(--blue);}
+    /* STRIP */
+    .strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+      border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;margin-bottom:20px;}
+    @media(max-width:560px){.strip{grid-template-columns:repeat(2,1fr);}}
+    .sc{background:var(--bg3);padding:18px 20px;display:flex;flex-direction:column;gap:4px;
+      position:relative;transition:background .2s;}
+    .sc:hover{background:var(--bg4);}
+    .sc::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity .2s;}
+    .sc:nth-child(1)::after{background:var(--blue);}
+    .sc:nth-child(2)::after{background:var(--green);}
+    .sc:nth-child(3)::after{background:var(--yellow);}
+    .sc:nth-child(4)::after{background:var(--cyan);}
+    .sc:hover::after{opacity:1;}
+    .sc-label{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace;
+      letter-spacing:.08em;text-transform:uppercase;}
+    .sc-value{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;line-height:1.1;}
+    .sc-unit{font-size:12px;color:var(--text3);font-weight:400;}
+    .sc-sub{font-size:11px;color:var(--text3);}
+    .pos{color:var(--green);} .neg{color:var(--red);} .neu{color:var(--text);}
+    /* CARD */
+    .card{background:var(--bg3);border:1px solid var(--border);
+      border-radius:var(--r3);overflow:hidden;margin-bottom:16px;}
+    .card-header{display:flex;align-items:center;justify-content:space-between;
+      padding:12px 20px;border-bottom:1px solid var(--border);background:var(--bg2);}
+    .card-title{font-size:12px;font-weight:700;color:var(--text2);
+      font-family:'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;}
+    .card-body{padding:20px;}
+    /* TABLE */
+    .record-table{width:100%;border-collapse:collapse;}
+    .record-table thead tr{background:var(--bg2);}
+    .record-table th{padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:10px;
+      font-weight:600;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;
+      text-align:left;border-bottom:1px solid var(--border);}
+    .record-table td{padding:12px 14px;border-bottom:1px solid rgba(30,38,51,.6);vertical-align:middle;}
+    .record-table tbody tr:hover{background:rgba(77,159,255,.04);}
+    .record-table tbody tr:last-child td{border-bottom:none;}
+    .date-link{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;
+      color:var(--blue);text-decoration:none;}
+    .date-link:hover{color:var(--text);}
+    .chk{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;
+      font-family:'JetBrains Mono',monospace;padding:2px 8px;border-radius:3px;}
+    .chk.up  {background:rgba(51,201,122,.1);border:1px solid rgba(51,201,122,.25);color:var(--green);}
+    .chk.down{background:rgba(240,64,96,.1);border:1px solid rgba(240,64,96,.25);color:var(--red);}
+    .chk.flat{background:rgba(122,147,176,.1);border:1px solid rgba(122,147,176,.25);color:var(--text2);}
+    .chk.buy {background:rgba(77,159,255,.1);border:1px solid rgba(77,159,255,.25);color:var(--blue);}
+    .chk.sell{background:rgba(240,64,96,.1);border:1px solid rgba(240,64,96,.25);color:var(--red);}
+    .chk.watch{background:rgba(122,147,176,.1);border:1px solid rgba(122,147,176,.25);color:var(--text2);}
+    .pips-num{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;}
+    .pips-num.pos{color:var(--green);} .pips-num.neg{color:var(--red);} .pips-num.ze{color:var(--text3);}
+    .arr-btn{display:inline-flex;padding:4px 10px;border-radius:var(--r);font-size:11px;
+      font-family:'JetBrains Mono',monospace;text-decoration:none;color:var(--text3);
+      border:1px solid var(--border);background:var(--bg2);transition:all .2s;}
+    .arr-btn:hover{color:var(--blue);border-color:var(--blue);}
+    /* CHART */
+    .chart-wrap{position:relative;height:220px;}
+    /* DAY GRID */
+    .day-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:6px;}
+    .day-cell{aspect-ratio:1;border-radius:var(--r2);display:flex;flex-direction:column;
+      align-items:center;justify-content:center;gap:2px;font-family:'JetBrains Mono',monospace;
+      font-size:11px;font-weight:600;text-decoration:none;border:1px solid var(--border);
+      background:var(--bg2);color:var(--text3);transition:all .18s;}
+    .day-cell:hover{transform:scale(1.06);z-index:2;}
+    .day-cell.inactive{opacity:.25;pointer-events:none;}
+    .day-cell .dn{font-size:13px;font-weight:700;}
+    .day-cell .dp{font-size:9px;opacity:.8;}
+    .day-cell.win {background:rgba(51,201,122,.12);border-color:rgba(51,201,122,.3);color:var(--green);}
+    .day-cell.win:hover{background:rgba(51,201,122,.2);}
+    .day-cell.loss{background:rgba(240,64,96,.12);border-color:rgba(240,64,96,.3);color:var(--red);}
+    .day-cell.loss:hover{background:rgba(240,64,96,.2);}
+    .day-cell.even{background:rgba(240,160,48,.12);border-color:rgba(240,160,48,.3);color:var(--yellow);}
+    .day-cell.wday{background:var(--bg3);border-color:var(--border2);color:var(--text3);}
+    /* FOOTER */
+    .site-footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:14px 24px;
+      display:flex;align-items:center;justify-content:space-between;
+      font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);}
+    @media(max-width:600px){.hide-sm{display:none;}}
+  </style>
+</head>
+<body>
+<div class="page-wrap">
+
+<header class="site-header">
+  <div class="h-left">
+    <div class="logo">📊</div>
+    <div class="h-title">トレード記録</div>
+    <span class="h-pair">USD/JPY</span>
+  </div>
+  <div class="h-right">
+    <div class="status-badge b-out" id="statusBadge">
+      <span class="pulse"></span><span>確認中</span>
+    </div>
+    <a href="my_rule5.html" class="nav-pill">📘 ルール</a>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-inner">
+      <div>
+        <div class="eyebrow">Tokyo Flow Strategy</div>
+        <h1 class="hero-title">東京フロー戦略 完全体系<br>
+          <span class="accent">— 選ばれた日だけで勝つ技術</span></h1>
+        <p class="hero-sub">予測ではなく事実への追従。9〜10時の異常な資金フローを確認してから乗る、再現性最優先のスキャル設計。</p>
+        <div class="hero-tags">
+          <span class="htag ht1">9:00〜12:00 JST</span>
+          <span class="htag ht2">30 pips 条件</span>
+          <span class="htag ht3">5〜10 pips 即利確</span>
+          <span class="htag ht4">フロー追従型</span>
+        </div>
+      </div>
+      <a href="my_rule5.html" class="rule-card">
+        <div style="font-size:28px;">📘</div>
+        <div><div class="rc-label">Rule Book</div><div class="rc-title">ルール &amp; 心得<br>完全版</div></div>
+        <div class="rc-arrow">→ 開く</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- STATS STRIP -->
+  <div class="strip">
+    <div class="sc">
+      <div class="sc-label">合計 pips</div>
+      <div class="sc-value neu" id="sv-total">—<span class="sc-unit"> pips</span></div>
+      <div class="sc-sub" id="ss-total">—</div>
+    </div>
+    <div class="sc">
+      <div class="sc-label">勝率</div>
+      <div class="sc-value neu" id="sv-wr">—<span class="sc-unit"> %</span></div>
+      <div class="sc-sub" id="ss-wr">—</div>
+    </div>
+    <div class="sc">
+      <div class="sc-label">平均 pips</div>
+      <div class="sc-value neu" id="sv-avg">—<span class="sc-unit"> pips</span></div>
+      <div class="sc-sub" id="ss-avg">—</div>
+    </div>
+    <div class="sc">
+      <div class="sc-label">記録件数</div>
+      <div class="sc-value neu" id="sv-cnt">—<span class="sc-unit"> 件</span></div>
+      <div class="sc-sub" id="ss-cnt">—</div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Log — 2026.04</span>
+      <span style="font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace;" id="dataSrc"></span>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="record-table">
+        <thead>
+          <tr>
+            <th>Date</th><th>9→10 値動き</th>
+            <th class="hide-sm">異常性</th><th class="hide-sm">継続性</th>
+            <th>Action</th><th>Pips</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="recBody">
+          <tr><td colspan="7" style="text-align:center;padding:28px;color:var(--text3);
+            font-size:12px;font-family:'JetBrains Mono',monospace;">
+            日誌ページで保存すると表示されます
+          </td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CHART -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">Equity Curve</span></div>
+    <div class="card-body"><div class="chart-wrap"><canvas id="pipsChart"></canvas></div></div>
+  </div>
+
+  <!-- DAY GRID -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">Calendar — April 2026</span></div>
+    <div class="card-body"><div class="day-grid" id="dayGrid"></div></div>
+  </div>
+
+</main>
+<footer class="site-footer">
+  <span>USD/JPY · Tokyo Session · 2026.04</span>
+  <span>09:00〜12:00 JST</span>
+</footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+/* ════ マップ定義 ════ */
+const MOVE_MAP = {up_s:'↑↑ 強い上昇',up_g:'↑ 上昇',down_s:'↓↓ 強い下降',down_g:'↓ 下降',flat:'→ 方向感なし'};
+const MOVE_CLS = {up_s:'up',up_g:'up',down_s:'down',down_g:'down',flat:'flat'};
+const ACT_MAP  = {buy:'買い',sell:'売り',watch:'見送り'};
+const ACT_CLS  = {buy:'buy',sell:'sell',watch:'watch'};
+
+/* ════ localStorage から全記録取得（同期・即時） ════ */
+function getAllFromLS() {
+  const out = [];
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (!/^trade_\d{8}$/.test(k)) continue;
+      const d = JSON.parse(localStorage.getItem(k));
+      if (!d || !d.date) continue;
+      if (!d.label) d.label = d.date.slice(0,4)+'-'+d.date.slice(4,6)+'-'+d.date.slice(6,8);
+      out.push(d);
+    }
+  } catch {}
+  return out.sort((a,b) => a.date.localeCompare(b.date));
+}
+
+/* ════ リポジトリ検出 ════ */
+function detectRepo() {
+  const m = location.hostname.match(/^(.+)\.github\.io$/);
+  if (!m) return null;
+  const owner = m[1];
+  const parts = location.pathname.replace(/\/+$/,'').split('/').filter(Boolean);
+  return { owner, repo: parts.length ? parts[0] : owner+'.github.io' };
+}
+
+/* ════ GitHub から data/ を並列取得 ════ */
+async function fetchFromGitHub() {
+  const repo = detectRepo();
+  if (!repo) return null;
+  try {
+    const ctrl = new AbortController();
+    setTimeout(() => ctrl.abort(), 6000);
+    const res = await fetch(
+      `https://api.github.com/repos/${repo.owner}/${repo.repo}/contents/data`,
+      { headers: { 'Accept': 'application/vnd.github.v3+json' }, signal: ctrl.signal }
+    );
+    if (!res.ok) return null;
+    const files = await res.json();
+    if (!Array.isArray(files)) return null;
+    const jsonFiles = files.filter(f => f.type==='file' && /^\d{8}\.json$/.test(f.name));
+    if (!jsonFiles.length) return null;
+    const results = await Promise.allSettled(
+      jsonFiles.map(f => fetch(f.download_url).then(r => r.ok ? r.json() : null).catch(()=>null))
+    );
+    return results
+      .filter(r => r.status==='fulfilled' && r.value)
+      .map(r => r.value)
+      .filter(d => d && d.date)
+      .map(d => { if (!d.label) d.label=d.date.slice(0,4)+'-'+d.date.slice(4,6)+'-'+d.date.slice(6,8); return d; })
+      .sort((a,b) => a.date.localeCompare(b.date));
+  } catch { return null; }
+}
+
+/* ════ GitHub から nissi/ 日付一覧取得 ════ */
+async function fetchNissiDates() {
+  const repo = detectRepo();
+  if (!repo) return null;
+  try {
+    const ctrl = new AbortController();
+    setTimeout(() => ctrl.abort(), 5000);
+    const res = await fetch(
+      `https://api.github.com/repos/${repo.owner}/${repo.repo}/contents/nissi`,
+      { headers: { 'Accept': 'application/vnd.github.v3+json' }, signal: ctrl.signal }
+    );
+    if (!res.ok) return null;
+    const files = await res.json();
+    if (!Array.isArray(files)) return null;
+    return files
+      .filter(f => f.type==='file' && /^\d{8}\.html$/.test(f.name))
+      .map(f => f.name.replace('.html',''))
+      .sort();
+  } catch { return null; }
+}
+
+/* ════ 稼働バッジ（毎分更新） ════ */
+function updateBadge() {
+  const el  = document.getElementById('statusBadge');
+  const jst = new Date(Date.now() + 9*3600000);
+  const y=jst.getUTCFullYear(), m=jst.getUTCMonth();
+  const dow=jst.getUTCDay(), h=jst.getUTCHours(), min=jst.getUTCMinutes();
+  const mins = h*60+min;
+  const isThis = y===2026 && m===3;
+  const isPast = y>2026 || (y===2026 && m>3);
+  const isWkd  = dow===0||dow===6;
+  const isSess = mins>=540 && mins<720;
+  let cls='b-out', txt='セッション外';
+  if      (isPast)               { cls='b-done'; txt='✓ 完了'; }
+  else if (!isThis)              { cls='b-out';  txt='⏳ 開始前'; }
+  else if (isWkd)                { cls='b-wknd'; txt='週末'; }
+  else if (isThis&&!isWkd&&isSess){ cls='b-active'; txt='稼働中'; }
+  el.className = `status-badge ${cls}`;
+  el.innerHTML = cls==='b-done' ? `<span>${txt}</span>` : `<span class="pulse"></span><span>${txt}</span>`;
+  setTimeout(updateBadge, (60-new Date().getSeconds())*1000);
+}
+
+/* ════ 描画 ════ */
+let chartInst = null;
+function renderAll(records, allDates) {
+  const traded = records.filter(r=>r.action!=='watch');
+  const wins   = traded.filter(r=>r.pips>0);
+  const total  = traded.reduce((s,r)=>s+r.pips, 0);
+  const avg    = traded.length ? total/traded.length : 0;
+  const wr     = traded.length ? wins.length/traded.length*100 : 0;
+  const fv = v => (v>=0?'+':'')+v.toFixed(1);
+
+  const setV = (id, html, cls) => { const e=document.getElementById(id); e.innerHTML=html; if(cls) e.className=`sc-value ${cls}`; };
+  if (traded.length) {
+    setV('sv-total', `${fv(total)}<span class="sc-unit"> pips</span>`, total>0?'pos':total<0?'neg':'neu');
+    setV('sv-wr',    `${wr.toFixed(1)}<span class="sc-unit"> %</span>`, wr>=50?'pos':wr>0?'neu':'neg');
+    setV('sv-avg',   `${fv(avg)}<span class="sc-unit"> pips</span>`, avg>0?'pos':avg<0?'neg':'neu');
+    document.getElementById('ss-total').textContent = `${traded.length}回トレード`;
+    document.getElementById('ss-wr').textContent    = `${wins.length}勝 / ${traded.length-wins.length}敗`;
+    document.getElementById('ss-avg').textContent   = '1回あたり';
+  }
+  setV('sv-cnt', `${records.length}<span class="sc-unit"> 件</span>`, 'neu');
+  document.getElementById('ss-cnt').textContent = `${allDates.length}日分`;
+
+  /* テーブル */
+  const tbody = document.getElementById('recBody');
+  tbody.innerHTML = '';
+  if (!records.length) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--text3);font-size:12px;font-family:'JetBrains Mono',monospace;">
+      日誌ページで保存すると表示されます</td></tr>`;
+  } else {
+    records.forEach(r => {
+      const p   = r.pips||0;
+      const mv  = r.move9to10 ? `<span class="chk ${MOVE_CLS[r.move9to10]||'flat'}">${MOVE_MAP[r.move9to10]}</span>` : '—';
+      const abn = r.abnormal   ? `<span class="chk ${r.abnormal==='yes'?'up':'flat'}">${r.abnormal==='yes'?'有り':'無し'}</span>` : '—';
+      const con = r.continuity ? `<span class="chk ${r.continuity==='yes'?'up':'flat'}">${r.continuity==='yes'?'有り':'無し'}</span>` : '—';
+      const act = r.action     ? `<span class="chk ${ACT_CLS[r.action]||'flat'}">${ACT_MAP[r.action]||r.action}</span>` : '—';
+      const pc  = p>0?'pos':p<0?'neg':'ze';
+      const tr  = document.createElement('tr');
+      tr.innerHTML = `
+        <td><a class="date-link" href="nissi/${r.date}.html">${r.label}</a></td>
+        <td>${mv}</td><td class="hide-sm">${abn}</td><td class="hide-sm">${con}</td>
+        <td>${act}</td>
+        <td><span class="pips-num ${pc}">${p>0?'+':''}${p.toFixed(1)}</span></td>
+        <td><a href="nissi/${r.date}.html" class="arr-btn">→</a></td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  /* カレンダー */
+  const grid = document.getElementById('dayGrid');
+  grid.innerHTML = '';
+  for (let d=1; d<=30; d++) {
+    const dd  = String(d).padStart(2,'0');
+    const key = `202604${dd}`;
+    const rec = records.find(r=>r.date===key);
+    const exists = allDates.includes(key);
+    const p   = rec ? (rec.pips||0) : null;
+    const a   = document.createElement('a');
+    a.href = `nissi/${key}.html`;
+    a.className = 'day-cell';
+    if (!exists && !rec) a.classList.add('inactive');
+    if (rec) {
+      if (rec.action==='watch') a.classList.add('wday');
+      else if (p>0) a.classList.add('win');
+      else if (p<0) a.classList.add('loss');
+      else a.classList.add('even');
+    }
+    a.innerHTML = `<span class="dn">${d}</span>${rec&&rec.action!=='watch'&&p!==null?`<span class="dp">${p>0?'+':''}${p.toFixed(1)}</span>`:''}`;
+    grid.appendChild(a);
+  }
+
+  /* グラフ */
+  if (chartInst) { chartInst.destroy(); chartInst=null; }
+  const ctx  = document.getElementById('pipsChart').getContext('2d');
+  const trec = records.filter(r=>r.action!=='watch');
+  if (!trec.length) {
+    chartInst = new Chart(ctx, { type:'bar',
+      data:{labels:['データなし'],datasets:[{data:[0],backgroundColor:'#1e2633',borderRadius:4}]},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{enabled:false}},
+        scales:{x:{ticks:{color:'#3d5068'},grid:{color:'#1e263320'}},
+                y:{ticks:{color:'#3d5068'},grid:{color:'#1e263350'}}}}});
+    return;
+  }
+  const labels  = trec.map(r=>r.label.slice(5));
+  const bars    = trec.map(r=>r.pips||0);
+  let cum=0; const cumLine=trec.map(r=>{cum+=(r.pips||0);return+cum.toFixed(1);});
+  chartInst = new Chart(ctx, {type:'bar',
+    data:{labels,datasets:[
+      {type:'line',label:'累積',data:cumLine,borderColor:'#4d9fff',backgroundColor:'rgba(77,159,255,.08)',
+       borderWidth:2,pointRadius:3,pointBackgroundColor:'#4d9fff',fill:true,tension:.35,yAxisID:'y'},
+      {type:'bar',label:'日次',data:bars,
+       backgroundColor:bars.map(v=>v>=0?'rgba(51,201,122,.5)':'rgba(240,64,96,.5)'),
+       borderColor:bars.map(v=>v>=0?'#33c97a':'#f04060'),borderWidth:1,borderRadius:4,yAxisID:'y'}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:true,labels:{color:'#7a93b0',font:{size:10},boxWidth:10}},
+        tooltip:{backgroundColor:'#0c1018',borderColor:'#1e2633',borderWidth:1,
+          titleColor:'#dce8f5',bodyColor:'#7a93b0',
+          callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y>=0?'+':''}${c.parsed.y} pips`}}},
+      scales:{x:{ticks:{color:'#3d5068',font:{size:10}},grid:{color:'rgba(30,38,51,.4)'}},
+              y:{ticks:{color:'#3d5068',font:{size:10}},grid:{color:'rgba(30,38,51,.6)'}}}}});
+}
+
+/* ════ メイン（即時同期 → GitHub バックグラウンド） ════ */
+updateBadge();
+
+/* ① localStorage から即時描画（0秒） */
+const lsRecs = getAllFromLS();
+const lsDates = lsRecs.map(r=>r.date);
+renderAll(lsRecs, lsDates);
+document.getElementById('dataSrc').textContent = '💾 localStorage';
+
+/* ② GitHub から非同期で追加取得・マージ */
+(async () => {
+  try {
+    const [ghRecs, ghDates] = await Promise.all([fetchFromGitHub(), fetchNissiDates()]);
+    if (!ghRecs && !ghDates) return; // GitHub 取得失敗→そのまま
+
+    /* マージ: GitHub データを localStorage にキャッシュ */
+    const merged = [...lsRecs];
+    if (ghRecs) {
+      ghRecs.forEach(g => {
+        const idx = merged.findIndex(m=>m.date===g.date);
+        const gTime = new Date(g.savedAt||0).getTime();
+        if (idx >= 0) {
+          const lTime = new Date(merged[idx].savedAt||0).getTime();
+          if (gTime > lTime) { merged[idx]=g; try{localStorage.setItem('trade_'+g.date,JSON.stringify(g));}catch{} }
+        } else {
+          merged.push(g);
+          try{localStorage.setItem('trade_'+g.date,JSON.stringify(g));}catch{}
+        }
+      });
+    }
+    merged.sort((a,b)=>a.date.localeCompare(b.date));
+
+    const allDates = ghDates || merged.map(r=>r.date);
+    /* localStorage にしかない日付も追加 */
+    lsDates.forEach(d=>{ if(!allDates.includes(d)) allDates.push(d); });
+    allDates.sort();
+
+    renderAll(merged, allDates);
+    const repo = detectRepo();
+    document.getElementById('dataSrc').textContent =
+      repo ? `🔗 ${repo.owner}/${repo.repo}` : '💾 localStorage';
+  } catch (e) {
+    console.warn('GitHub fetch error:', e);
+    /* エラーでも localStorage 版がすでに描画済み */
+  }
+})();
+</script>
+</body>
+</html>
