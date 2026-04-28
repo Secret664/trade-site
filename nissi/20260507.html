@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026-05-07 | トレード記録</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .env-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;}
+    @media(max-width:640px){.env-grid-3{grid-template-columns:1fr;}}
+    .yn-group{display:flex;gap:8px;}
+    .yn{flex:1;text-align:center;padding:7px 0;border-radius:6px;font-size:13px;font-weight:700;
+      border:1px solid var(--border);background:var(--bg2);color:var(--text3);
+      cursor:pointer;transition:all .12s;user-select:none;}
+    .yn:hover{border-color:var(--bord2);color:var(--text2);}
+    .yn.sel-y{background:#3fb95022;border-color:var(--green);color:var(--green);}
+    .yn.sel-n{background:#8b949e18;border-color:var(--text3);color:var(--text2);}
+    .timing-group{display:flex;gap:8px;}
+    .timing-btn{flex:1;text-align:center;padding:8px 4px;border-radius:6px;font-size:12px;
+      font-weight:700;border:1px solid var(--border);background:var(--bg2);color:var(--text3);
+      cursor:pointer;transition:all .12s;user-select:none;}
+    .timing-btn:hover{border-color:var(--bord2);color:var(--text2);}
+    .timing-btn.sel{background:#1f6feb22;border-color:var(--blue);color:var(--blue);}
+    .pips-input-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);
+      padding:16px 20px;display:flex;align-items:center;gap:16px;}
+    .pips-input-box .field-label{margin-bottom:0;min-width:60px;}
+    #pipsResult{font-size:28px;font-weight:700;width:140px;text-align:right;padding:6px 12px;}
+    #pipsResult:focus{border-color:var(--blue);}
+    .ci-img{width:100%;height:200px;object-fit:contain;display:block;background:var(--bg);
+      padding:8px;cursor:zoom-in;transition:opacity .15s;}
+    .ci-img:hover{opacity:.85;}
+    .ci-img.hidden{display:none;}
+    #lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9999;
+      align-items:center;justify-content:center;cursor:zoom-out;}
+    #lightbox.open{display:flex;}
+    #lb-img{max-width:96vw;max-height:94vh;object-fit:contain;border-radius:6px;
+      box-shadow:0 8px 60px #0009;animation:lbIn .18s ease;}
+    @keyframes lbIn{from{transform:scale(.9);opacity:0;}to{transform:scale(1);opacity:1;}}
+    #lb-close{position:fixed;top:14px;right:18px;font-size:32px;color:#fff;cursor:pointer;
+      opacity:.65;background:none;border:none;line-height:1;}
+    #lb-close:hover{opacity:1;}
+    /* 保存バッジ */
+    .sync-badge{display:inline-flex;align-items:center;gap:5px;
+      font-size:11px;padding:4px 12px;border-radius:10px;font-weight:600;}
+    .sync-badge.saved  {background:#3fb95022;border:1px solid #3fb95055;color:var(--green);}
+    .sync-badge.unsaved{background:#d2992222;border:1px solid #d2992255;color:var(--yellow);}
+    .sync-badge.synced {background:#1f6feb22;border:1px solid #1f6feb55;color:var(--blue);}
+    .sync-badge.saving {background:#8b949e18;border:1px solid #8b949e44;color:var(--text2);}
+    .sync-badge.error  {background:#f8514922;border:1px solid #f8514955;color:var(--red);}
+    /* PAT ボタン */
+    .pat-btn{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;
+      border-radius:6px;border:1px solid var(--border);background:var(--bg3);
+      color:var(--text3);font-size:11px;cursor:pointer;transition:all .15s;}
+    .pat-btn:hover{border-color:var(--bord2);color:var(--text2);}
+    .pat-dot{width:6px;height:6px;border-radius:50%;}
+    /* モーダル */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);
+      z-index:10000;align-items:center;justify-content:center;padding:20px;}
+    .modal-overlay.open{display:flex;}
+    .modal-box{background:#161b22;border:1px solid #30363d;border-radius:12px;
+      width:100%;max-width:460px;overflow:hidden;box-shadow:0 20px 60px #000b;}
+    .modal-head{padding:18px 22px;border-bottom:1px solid #30363d;
+      display:flex;align-items:center;gap:10px;}
+    .modal-body{padding:20px 22px;}
+    .modal-input{width:100%;background:#0d1117;border:1px solid #30363d;border-radius:6px;
+      padding:10px 14px;color:#e6edf3;font-family:'JetBrains Mono',monospace;
+      font-size:14px;outline:none;box-sizing:border-box;margin-bottom:6px;}
+    .modal-input:focus{border-color:#58a6ff;}
+    .modal-err{font-size:12px;color:#f85149;min-height:16px;margin-bottom:10px;}
+    .modal-btns{display:flex;gap:10px;}
+    .btn-primary{flex:1;background:#1f6feb;color:#fff;font-weight:700;font-size:13px;
+      padding:10px;border:none;border-radius:6px;cursor:pointer;font-family:inherit;}
+    .btn-secondary{background:#21262d;color:#8b949e;font-size:13px;padding:10px 16px;
+      border:1px solid #30363d;border-radius:6px;cursor:pointer;font-family:inherit;}
+    .info-box{background:#21262d;border:1px solid #30363d;border-radius:8px;
+      padding:12px 16px;margin-bottom:14px;font-size:12px;color:#8b949e;line-height:1.85;}
+    .ok-box{background:#3fb95015;border:1px solid #3fb95040;border-radius:8px;
+      padding:10px 14px;margin-bottom:14px;font-size:12px;color:#8b949e;}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-title">📊 トレード記録 <span class="pair-tag">USD/JPY</span></div>
+  <nav class="header-nav">
+    <a href="../index_4.html" class="nav-btn">← 一覧へ</a>
+    <a href="../my_rule5.html" class="nav-btn" style="background:#1f6feb22;border-color:#1f6feb55;color:var(--blue);">📘 ルール</a>
+    <button class="pat-btn" id="patBtn" onclick="openPATModal()">
+      <span class="pat-dot" id="patDot" style="background:var(--text3);"></span>
+      <span id="patLabel">GitHub同期</span>
+    </button>
+  </nav>
+</header>
+
+<main class="container">
+  <a href="../index_4.html" class="back-link">← 月間一覧に戻る</a>
+
+  <div class="page-header">
+    <h1>📅 <span class="date-mono">2026-05-07</span>
+      <span style="font-size:14px;color:var(--text3);font-weight:400;">（木曜日）</span>
+    </h1>
+  </div>
+
+  <!-- 環境分析 -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">🌐 環境分析</span></div>
+    <div class="card-body">
+
+      <div class="env-grid">
+        <div class="env-item">
+          <div class="env-label">📅 日足 方向</div>
+          <div class="opt-group" id="nikki-opts">
+            <span class="opt g" data-val="up"   onclick="sel('nikki','up',  this,'g')">↑ 上昇</span>
+            <span class="opt r" data-val="down" onclick="sel('nikki','down',this,'r')">↓ 下降</span>
+            <span class="opt"   data-val="flat" onclick="sel('nikki','flat',this,'')">→ 方向感なし</span>
+          </div>
+        </div>
+        <div class="env-item">
+          <div class="env-label">⏱ 短期足 トレンド方向</div>
+          <div class="opt-group" id="short-opts">
+            <span class="opt g" data-val="up"   onclick="sel('short','up',  this,'g')">↑ 上昇</span>
+            <span class="opt r" data-val="down" onclick="sel('short','down',this,'r')">↓ 下降</span>
+            <span class="opt"   data-val="flat" onclick="sel('short','flat',this,'')">→ 方向感なし</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="env-item" style="margin-bottom:12px;">
+        <div class="env-label">🕘 9:00〜10:00 値動き</div>
+        <div class="opt-group" id="move-opts">
+          <span class="opt g" data-val="up_s"   onclick="sel('move','up_s',  this,'g')">↑↑ 強い上昇</span>
+          <span class="opt g" data-val="up_g"   onclick="sel('move','up_g',  this,'g')">↑ 緩やかな上昇</span>
+          <span class="opt r" data-val="down_s" onclick="sel('move','down_s',this,'r')">↓↓ 強い下降</span>
+          <span class="opt r" data-val="down_g" onclick="sel('move','down_g',this,'r')">↓ 緩やかな下降</span>
+          <span class="opt"   data-val="flat"   onclick="sel('move','flat',  this,'')">→ 方向感なし</span>
+        </div>
+      </div>
+
+      <div class="env-grid-3">
+        <div class="env-item">
+          <div class="env-label">⚡ 異常性</div>
+          <div class="yn-group">
+            <span class="yn" data-group="abnormal" data-val="yes" onclick="selYN('abnormal','yes',this)">有り</span>
+            <span class="yn" data-group="abnormal" data-val="no"  onclick="selYN('abnormal','no', this)">無し</span>
+          </div>
+        </div>
+        <div class="env-item">
+          <div class="env-label">🔄 継続性</div>
+          <div class="yn-group">
+            <span class="yn" data-group="continuity" data-val="yes" onclick="selYN('continuity','yes',this)">有り</span>
+            <span class="yn" data-group="continuity" data-val="no"  onclick="selYN('continuity','no', this)">無し</span>
+          </div>
+        </div>
+        <div class="env-item">
+          <div class="env-label">🎯 エントリータイミング</div>
+          <div class="timing-group">
+            <span class="timing-btn" data-val="10just"   onclick="selTiming('10just',  this)">10:00<br>just</span>
+            <span class="timing-btn" data-val="pullback" onclick="selTiming('pullback',this)">押し<br>戻し</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-box">
+          <div class="field-label">📏 9〜10時 値幅（pips）</div>
+          <input type="number" id="valWidth" class="field-input" placeholder="例: 35.0" step="0.1">
+        </div>
+        <div class="env-item">
+          <div class="env-label">🏹 行動</div>
+          <div class="opt-group" id="action-opts">
+            <span class="opt"   data-val="buy"   onclick="sel('action','buy',  this,'')">🟦 買い</span>
+            <span class="opt"   data-val="sell"  onclick="sel('action','sell', this,'p')">🟪 売り</span>
+            <span class="opt y" data-val="watch" onclick="sel('action','watch',this,'y')">👀 見送り</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 結果 -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">💰 結果</span></div>
+    <div class="card-body">
+      <div class="pips-input-box">
+        <div class="field-label">pips</div>
+        <input type="number" id="pipsResult" class="field-input" placeholder="0.0" step="0.1">
+        <span style="font-size:13px;color:var(--text3);">pips</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- チャート -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">📊 チャート</span>
+      <span style="font-size:11px;color:var(--text3);">タップで拡大</span>
+    </div>
+    <div class="card-body">
+      <div class="chart-images">
+        <div class="ci-box">
+          <div class="ci-label">📅 日足チャート</div>
+          <img id="img-day" class="ci-img"
+               src="../images/20260507_day.png" alt="日足"
+               onclick="openLB(this.src)"
+               onload="imgOk('img-day','ph-day')" onerror="imgNg('img-day','ph-day')">
+          <div id="ph-day" class="ci-placeholder" style="display:none;">
+            <span style="font-size:28px;">📈</span><span>画像なし</span>
+            <code style="font-size:10px;color:var(--text3);">images/20260507_day.png</code>
+          </div>
+        </div>
+        <div class="ci-box">
+          <div class="ci-label">⏱ 15分足チャート</div>
+          <img id="img-15" class="ci-img"
+               src="../images/20260507_15.png" alt="15分足"
+               onclick="openLB(this.src)"
+               onload="imgOk('img-15','ph-15')" onerror="imgNg('img-15','ph-15')">
+          <div id="ph-15" class="ci-placeholder" style="display:none;">
+            <span style="font-size:28px;">📊</span><span>画像なし</span>
+            <code style="font-size:10px;color:var(--text3);">images/20260507_15.png</code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- メモ -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">📝 メモ・振り返り</span></div>
+    <div class="card-body">
+      <textarea id="memoText" class="memo-textarea"
+        placeholder="エントリー根拠・反省など..."></textarea>
+    </div>
+  </div>
+
+  <!-- 保存 -->
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:24px;">
+    <button class="save-btn" id="saveBtn" onclick="doSave()">💾 保存する</button>
+    <span class="sync-badge unsaved" id="syncBadge">● 未保存</span>
+    <a href="../index_4.html" class="nav-btn" style="margin-left:auto;">← 一覧へ</a>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;">
+    <a href="20260506.html" class="nav-btn">← 前日</a>
+    <a href="20260508.html" class="nav-btn">次の日 →</a>
+  </div>
+</main>
+
+<footer class="site-footer">2026-05-07 · USD/JPY · Tokyo Session</footer>
+
+<!-- Lightbox -->
+<div id="lightbox" onclick="closeLB()">
+  <button id="lb-close" onclick="closeLB()">✕</button>
+  <img id="lb-img" src="" alt="">
+</div>
+
+<!-- PAT モーダル -->
+<div class="modal-overlay" id="patModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <span style="font-size:20px;">🔑</span>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:#e6edf3;">GitHub 同期設定</div>
+        <div style="font-size:11px;color:#6e7681;">他の端末でも記録を見るために必要です</div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="ok-box" id="patOkBox" style="display:none;">
+        ✅ <strong style="color:#3fb950;">PAT設定済み</strong> — GitHub に同期されます
+      </div>
+      <div class="info-box">
+        <strong style="color:#e6edf3;">PAT 取得手順</strong><br>
+        1. <a href="https://github.com/settings/tokens/new?scopes=repo&description=TradeRecord"
+              target="_blank" style="color:#58a6ff;">→ GitHub でトークンを発行 ↗</a><br>
+        2. <code style="background:#0d1117;padding:1px 4px;border-radius:3px;color:#58a6ff;">repo</code> スコープにチェック → Generate token<br>
+        3. 表示されたトークンをコピーして下に貼り付け
+      </div>
+      <div style="font-size:10px;color:#6e7681;letter-spacing:.06em;margin-bottom:5px;">PERSONAL ACCESS TOKEN</div>
+      <input class="modal-input" id="patInput" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+      <div class="modal-err" id="patErr"></div>
+      <div class="modal-btns">
+        <button class="btn-primary" onclick="savePAT()">設定して同期する</button>
+        <button class="btn-secondary" onclick="closePATModal()">閉じる</button>
+      </div>
+      <div style="margin-top:10px;font-size:10px;color:#3d5068;text-align:center;">
+        ブラウザを閉じると自動削除 · このページ外には送信されません
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════
+   設定
+════════════════════════════════════════════════ */
+const DATE_KEY   = '20260507';
+const DATE_LABEL = '2026-05-07';
+const LS_KEY     = 'trade_' + DATE_KEY;
+const PAT_KEY    = 'gh_trade_pat';
+
+/* ════════════════════════════════════════════════
+   フォーム状態
+════════════════════════════════════════════════ */
+const S = { nikki:'', short:'', move:'', abnormal:'', continuity:'', timing:'', action:'' };
+
+/* ════════════════════════════════════════════════
+   PAT 管理（sessionStorage）
+════════════════════════════════════════════════ */
+function getPAT()  { try { return sessionStorage.getItem(PAT_KEY) || ''; } catch { return ''; } }
+function setPAT(v) { try { sessionStorage.setItem(PAT_KEY, v.trim()); } catch {} }
+function hasPAT()  { return getPAT().length > 0; }
+
+function updatePATUI() {
+  const dot = document.getElementById('patDot');
+  const lbl = document.getElementById('patLabel');
+  const okBox = document.getElementById('patOkBox');
+  if (hasPAT()) {
+    dot.style.background = 'var(--green)';
+    lbl.textContent = 'GitHub同期: ON';
+    if (okBox) okBox.style.display = 'block';
+  } else {
+    dot.style.background = 'var(--red)';
+    lbl.textContent = 'GitHub同期: OFF';
+    if (okBox) okBox.style.display = 'none';
+  }
+}
+
+/* ════════════════════════════════════════════════
+   リポジトリ検出
+════════════════════════════════════════════════ */
+function detectRepo() {
+  const m = location.hostname.match(/^(.+)\.github\.io$/);
+  if (!m) return null;
+  const owner = m[1];
+  const parts = location.pathname.replace(/\/+$/, '').split('/').filter(Boolean);
+  // nissi/20260401.html なので parts[0]=repo, parts[1]=nissi, parts[2]=ファイル
+  const repo = parts.length >= 2 ? parts[0] : owner + '.github.io';
+  return { owner, repo };
+}
+
+/* ════════════════════════════════════════════════
+   GitHub API
+════════════════════════════════════════════════ */
+async function ghFetch(path, options = {}, timeoutMs = 8000) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${path}`,
+      { ...options, signal: ctrl.signal }
+    );
+    clearTimeout(t);
+    return res;
+  } catch (e) {
+    clearTimeout(t);
+    throw e;
+  }
+}
+
+/* GitHub からデータを読む */
+async function ghRead(repo) {
+  try {
+    const res = await ghFetch(
+      `${repo.owner}/${repo.repo}/contents/data/${DATE_KEY}.json`,
+      { headers: { 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (res.status === 404) return null;
+    if (!res.ok) return null;
+    const file = await res.json();
+    return JSON.parse(atob(file.content.replace(/\n/g, '')));
+  } catch { return null; }
+}
+
+/* GitHub にデータを書く */
+async function ghWrite(repo, data) {
+  const pat = getPAT();
+  if (!pat) throw new Error('PAT_REQUIRED');
+
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+  const apiPath = `${repo.owner}/${repo.repo}/contents/data/${DATE_KEY}.json`;
+  const headers = {
+    'Accept': 'application/vnd.github.v3+json',
+    'Authorization': `token ${pat}`,
+    'Content-Type': 'application/json'
+  };
+
+  // 既存 sha を取得
+  let sha;
+  try {
+    const ex = await ghFetch(apiPath, { headers });
+    if (ex.ok) { const j = await ex.json(); sha = j.sha; }
+  } catch {}
+
+  const res = await ghFetch(apiPath, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify({ message: `📅 ${DATE_KEY}`, content, ...(sha ? { sha } : {}) })
+  });
+
+  if (res.status === 401 || res.status === 403) {
+    setPAT(''); // PAT をクリア
+    updatePATUI();
+    throw new Error('PAT_INVALID');
+  }
+  if (!res.ok) {
+    const e = await res.json().catch(() => ({}));
+    throw new Error(e.message || `GitHub API ${res.status}`);
+  }
+  return true;
+}
+
+/* ════════════════════════════════════════════════
+   Lightbox
+════════════════════════════════════════════════ */
+function openLB(src) {
+  document.getElementById('lb-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLB() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLB(); closePATModal(); } });
+
+/* ════════════════════════════════════════════════
+   画像フォールバック
+════════════════════════════════════════════════ */
+function imgOk(i, p) { document.getElementById(i).classList.remove('hidden'); document.getElementById(p).style.display = 'none'; }
+function imgNg(i, p) { document.getElementById(i).classList.add('hidden'); document.getElementById(p).style.display = 'flex'; }
+window.addEventListener('load', () => {
+  ['day', '15'].forEach(k => {
+    const img = document.getElementById(`img-${k}`);
+    if (img && img.complete) {
+      img.naturalWidth > 0 ? imgOk(`img-${k}`, `ph-${k}`) : imgNg(`img-${k}`, `ph-${k}`);
+    }
+  });
+});
+
+/* ════════════════════════════════════════════════
+   ボタン選択
+════════════════════════════════════════════════ */
+function sel(g, v, el, c) {
+  const map = { nikki:'nikki-opts', short:'short-opts', move:'move-opts', action:'action-opts' };
+  document.querySelectorAll(`#${map[g]} .opt`).forEach(o =>
+    o.className = o.className.replace(/\bsel\b|\b[grpy]\b/g, '').trim()
+  );
+  el.classList.add('sel');
+  if (c) el.classList.add(c);
+  S[g] = v;
+  setBadge('unsaved');
+}
+function selYN(g, v, el) {
+  document.querySelectorAll(`[data-group="${g}"]`).forEach(o =>
+    o.className = o.className.replace(/\bsel-[yn]\b/g, '').trim()
+  );
+  el.classList.add(v === 'yes' ? 'sel-y' : 'sel-n');
+  S[g] = v;
+  setBadge('unsaved');
+}
+function selTiming(v, el) {
+  document.querySelectorAll('.timing-btn').forEach(o => o.classList.remove('sel'));
+  el.classList.add('sel');
+  S.timing = v;
+  setBadge('unsaved');
+}
+function colorPips() {
+  const v = parseFloat(document.getElementById('pipsResult').value);
+  document.getElementById('pipsResult').style.color =
+    isNaN(v) ? '' : v > 0 ? 'var(--green)' : v < 0 ? 'var(--red)' : '';
+}
+
+/* ════════════════════════════════════════════════
+   バッジ
+════════════════════════════════════════════════ */
+function setBadge(state, text) {
+  const b = document.getElementById('syncBadge');
+  const labels = {
+    unsaved: '● 未保存',
+    saving:  '⏳ 保存中…',
+    saved:   '✓ この端末に保存済',
+    synced:  '✓ GitHub に同期済',
+    error:   `✕ ${text || 'エラー'}`
+  };
+  b.className = `sync-badge ${state}`;
+  b.textContent = text ? (state === 'error' ? `✕ ${text}` : text) : labels[state] || state;
+}
+
+/* ════════════════════════════════════════════════
+   保存
+════════════════════════════════════════════════ */
+async function doSave() {
+  const data = {
+    date: DATE_KEY, label: DATE_LABEL,
+    nikkiEnv:   S.nikki,
+    shortEnv:   S.short,
+    move9to10:  S.move,
+    abnormal:   S.abnormal,
+    continuity: S.continuity,
+    timing:     S.timing,
+    action:     S.action,
+    valWidth:   parseFloat(document.getElementById('valWidth').value)  || 0,
+    pips:       parseFloat(document.getElementById('pipsResult').value) || 0,
+    memo:       document.getElementById('memoText').value,
+    savedAt:    new Date().toISOString()
+  };
+
+  setBadge('saving');
+  document.getElementById('saveBtn').disabled = true;
+
+  /* ① localStorage に保存（必ず成功） */
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(data));
+    setBadge('saved');
+  } catch (e) {
+    setBadge('error', 'localStorage 保存失敗');
+    document.getElementById('saveBtn').disabled = false;
+    return;
+  }
+
+  document.getElementById('saveBtn').disabled = false;
+
+  /* ② GitHub に同期（PAT がある場合のみ） */
+  const repo = detectRepo();
+  if (!repo || !hasPAT()) return; // PAT なしならここで終了
+
+  setBadge('saving');
+  try {
+    await ghWrite(repo, data);
+    setBadge('synced');
+  } catch (e) {
+    if (e.message === 'PAT_INVALID') {
+      setBadge('error', 'PATが無効です。再設定してください');
+      openPATModal();
+    } else {
+      setBadge('error', `同期失敗（この端末には保存済）`);
+    }
+  }
+}
+
+/* ════════════════════════════════════════════════
+   フォーム復元
+════════════════════════════════════════════════ */
+function restoreForm(d) {
+  const tryOpt = (gid, key, cfn) => {
+    if (!d[key]) return;
+    const el = document.querySelector(`#${gid} [data-val="${d[key]}"]`);
+    if (el) { el.classList.add('sel'); const c = cfn(d[key]); if (c) el.classList.add(c); }
+    S[gid.replace('-opts', '')] = d[key];
+  };
+  tryOpt('nikki-opts', 'nikkiEnv',  v => v==='up'?'g':v==='down'?'r':'');
+  tryOpt('short-opts', 'shortEnv',  v => v==='up'?'g':v==='down'?'r':'');
+  tryOpt('move-opts',  'move9to10', v => v.startsWith('up')?'g':v.startsWith('down')?'r':'');
+  tryOpt('action-opts','action',    v => v==='sell'?'p':v==='watch'?'y':'');
+  ['abnormal', 'continuity'].forEach(g => {
+    if (!d[g]) return;
+    const el = document.querySelector(`[data-group="${g}"][data-val="${d[g]}"]`);
+    if (el) { el.classList.add(d[g]==='yes'?'sel-y':'sel-n'); S[g] = d[g]; }
+  });
+  if (d.timing) {
+    const el = document.querySelector(`.timing-btn[data-val="${d.timing}"]`);
+    if (el) { el.classList.add('sel'); S.timing = d.timing; }
+  }
+  if (d.valWidth) document.getElementById('valWidth').value = d.valWidth;
+  if (d.pips)   { document.getElementById('pipsResult').value = d.pips; colorPips(); }
+  if (d.memo)     document.getElementById('memoText').value = d.memo;
+}
+
+/* ════════════════════════════════════════════════
+   PAT モーダル
+════════════════════════════════════════════════ */
+function openPATModal() {
+  updatePATUI();
+  document.getElementById('patInput').value = '';
+  document.getElementById('patErr').textContent = '';
+  document.getElementById('patModal').classList.add('open');
+  setTimeout(() => document.getElementById('patInput').focus(), 100);
+}
+function closePATModal() {
+  document.getElementById('patModal').classList.remove('open');
+}
+function savePAT() {
+  const val = document.getElementById('patInput').value.trim();
+  if (!val) { document.getElementById('patErr').textContent = 'トークンを入力してください'; return; }
+  setPAT(val);
+  updatePATUI();
+  closePATModal();
+}
+
+/* ════════════════════════════════════════════════
+   初期化（外部スクリプト依存なし・即時実行）
+════════════════════════════════════════════════ */
+(function init() {
+  updatePATUI();
+
+  /* イベント登録 */
+  document.getElementById('pipsResult').addEventListener('input', () => { colorPips(); setBadge('unsaved'); });
+  document.getElementById('memoText').addEventListener('input', () => setBadge('unsaved'));
+
+  /* ── まず「未保存」で即時表示（絶対にブロックしない） ── */
+  setBadge('unsaved');
+
+  /* ── localStorage から即時復元 ── */
+  let localData = null;
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (raw) localData = JSON.parse(raw);
+  } catch {}
+
+  if (localData) {
+    restoreForm(localData);
+    const ts = localData.savedAt ? new Date(localData.savedAt).toLocaleString('ja-JP') : '';
+    setBadge('saved', `✓ この端末に保存済${ts ? ' · ' + ts : ''}`);
+  }
+
+  /* ── GitHub から新しいデータを取得（完全バックグラウンド・UIをブロックしない） ── */
+  const repo = detectRepo();
+  if (repo) {
+    ghRead(repo).then(ghData => {
+      if (!ghData) return;
+      const ghTime = new Date(ghData.savedAt || 0).getTime();
+      const lsTime = localData ? new Date(localData.savedAt || 0).getTime() : 0;
+      if (ghTime > lsTime) {
+        try { localStorage.setItem(LS_KEY, JSON.stringify(ghData)); } catch {}
+        restoreForm(ghData);
+        const ts = ghData.savedAt ? new Date(ghData.savedAt).toLocaleString('ja-JP') : '';
+        setBadge('synced', `✓ GitHub から取得 · ${ts}`);
+      }
+    }).catch(() => { /* GitHub 失敗は無視 */ });
+  }
+})();
+</script>
+</body>
+</html>
